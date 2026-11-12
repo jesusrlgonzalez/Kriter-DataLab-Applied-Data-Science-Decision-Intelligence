@@ -1,0 +1,40 @@
+name: Publicar en Hugging Face Spaces
+# Único flujo que se ejecuta en cada push a main: valida y, solo si pasa, publica.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: publicar-huggingface
+  cancel-in-progress: false
+jobs:
+  validar:
+    uses: ./.github/workflows/ci.yml
+  deploy:
+    needs: validar
+    # Sin HF_SPACE_ID el trabajo se omite (publicación bloqueada, no fallida).
+    if: ${{ vars.HF_SPACE_ID != '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verificar el secreto de publicación
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: test -n "$HF_TOKEN" || { echo '::error::Falta el secreto HF_TOKEN (Settings → Secrets and variables → Actions)'; exit 1; }
+      - uses: huggingface/hub-sync@v0.3.0
+        with:
+          github_repo_id: ${{ github.repository }}
+          huggingface_repo_id: ${{ vars.HF_SPACE_ID }}
+          hf_token: ${{ secrets.HF_TOKEN }}
+          repo_type: space
+          space_sdk: static
+          subdirectory: site
+          # El Space queda como espejo exacto de site/: lo que no esté en site/ se borra del Space.
+          delete_removed: 'true'
+      - name: Resumen
+        env:
+          HF_SPACE_ID: ${{ vars.HF_SPACE_ID }}
+        run: echo "Publicado en https://huggingface.co/spaces/${HF_SPACE_ID}" >> "$GITHUB_STEP_SUMMARY"
