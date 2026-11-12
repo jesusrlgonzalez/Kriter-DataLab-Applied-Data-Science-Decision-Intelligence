@@ -1,24 +1,24 @@
-# Informe de auditoría y despliegue — Kriter DataLab 1.2.0
+# Informe de auditoría y despliegue — Kriter DataLab 1.2.1
 
 **Fecha:** 12-nov-2026 · **Responsable:** Jesus R.L. Gonzalez
 **Repositorio:** https://github.com/jesusrlgonzalez/Kriter-DataLab-Applied-Data-Science-Decision-Intelligence
 
 ## 1. Conclusión
 
-El producto está **publicado en GitHub y validado**; la **publicación en Hugging Face está bloqueada** únicamente por dos credenciales que debe crear el titular (`HF_SPACE_ID` y `HF_TOKEN`). No existe todavía una URL pública del Space y este informe no declara ninguna.
+El producto está **publicado y verificado**: código en GitHub, validación automática en verde y Space en vivo en https://huggingface.co/spaces/JesusRLGonzalez/kriter-datalab (pantalla completa: https://jesusrlgonzalez-kriter-datalab.static.hf.space/index.html).
 
 | Fase | Preparación local | Validación técnica | Publicación remota |
 |---|:-:|:-:|:-:|
 | 0 · Auditoría de recepción | PASS | PASS | n/a |
-| 1 · Producto y UX | PASS | PASS (28/28 en navegador) | n/a |
+| 1 · Producto y UX | PASS | PASS (28/28 en navegador) | PASS |
 | 2 · Reproducibilidad | PASS | PASS (clon limpio y GitHub Actions) | n/a |
-| 3 · Hugging Face Space estático | PASS | PASS (contrato del README y de `site/`) | BLOCKED |
-| 4 · GitHub y CI/CD | PASS | PASS (trabajo `validar` en verde) | PASS en GitHub · `deploy` omitido |
-| 5 · Seguridad y propiedad intelectual | PASS | PASS | PASS (repositorio sin secretos) |
-| 6 · Validación funcional | PASS | PASS | BLOCKED (sobre la URL real) |
-| 7 · Publicación | PASS | PASS | GitHub: PASS · Hugging Face: **BLOCKED** |
+| 3 · Hugging Face Space estático | PASS | PASS | PASS |
+| 4 · GitHub y CI/CD | PASS | PASS | PASS (`validar` y `deploy` en verde) |
+| 5 · Seguridad y propiedad intelectual | PASS | PASS | PASS (sin secretos; token solo en GitHub Secrets) |
+| 6 · Validación funcional | PASS | PASS | PASS (URL pública) |
+| 7 · Publicación | PASS | PASS | PASS |
 
-Ninguna fase quedó en FAIL. Desbloqueo: `docs/RUTA_SIN_TERMINAL.md` (4 pasos, ≈10 min).
+Ninguna fase quedó en FAIL ni en BLOCKED. Dos ejecuciones fallaron por defectos reales que se corrigieron (hallazgos 1 y 13).
 
 ## 2. Fase 0 — Recepción
 
@@ -52,6 +52,7 @@ Ninguna fase quedó en FAIL. Desbloqueo: `docs/RUTA_SIN_TERMINAL.md` (4 pasos, �
 | 10 | Menú móvil sin `aria-expanded`; botón «Exportar CSV» partido en tres líneas. | Baja | Atributo sincronizado, cierre con Escape, `nowrap`. |
 | 11 | `browser_smoke.py` dependía de `/usr/bin/chromium`. | Baja | Detección automática o `KRITER_BROWSER`. |
 | 12 | El manifiesto no se podía regenerar con las herramientas del repositorio. | Baja | `verify_release.py --write`. |
+| 13 | Hugging Face rechazó `colorTo: cyan` (valor exigido en el encargo): solo admite red, yellow, green, blue, indigo, purple, pink y gray. Lo detectó el primer despliegue real. | Media | `colorTo: green`, el admitido más cercano. Despliegue siguiente en verde. |
 
 **Rendimiento:** recalcular los 20,160 registros y redibujar las cinco páginas tarda 11–12 ms de mediana (máx. 26 ms) en escritorio, tableta y móvil emulados. No hay problema demostrable; no se añadió caché ni se cambió el algoritmo. Solo se agrupó el redibujado al redimensionar en un `requestAnimationFrame`.
 
@@ -84,21 +85,39 @@ Capturas: `evidence/01_vista_escritorio.png`, `evidence/02_vista_movil.png`. Exp
 | Elemento | Estado | Evidencia |
 |---|---|---|
 | Repositorio GitHub público con historial de un solo autor | PASS | Commits de `Jesús R. L. González`, sin coautores ni bots |
-| Validación en GitHub Actions | PASS | Ejecución 43316184984 (`validar` en verde, `deploy` omitido) |
-| Primera ejecución | FAIL corregido | Ejecución 43314235748: hallazgo n.º 1 |
-| Space `JesusRLGonzalez/kriter-datalab` | BLOCKED | No existe todavía; faltan `HF_SPACE_ID` y `HF_TOKEN` |
-| Verificación sobre la URL pública | BLOCKED | Depende del punto anterior |
+| Validación y despliegue en GitHub Actions | PASS | Ejecución 43321716779 (`validar` y `deploy` en verde) |
+| Space `JesusRLGonzalez/kriter-datalab` | PASS | Contiene solo `README.md`, `index.html` y el `.gitattributes` propio de Hugging Face |
+| Verificación sobre la URL pública | PASS | Ver tabla siguiente |
+| Ejecuciones fallidas | Corregidas | 43314235748 (hallazgo 1) y 43321468428 (hallazgo 13) |
+
+Comprobaciones hechas en la aplicación publicada (https://jesusrlgonzalez-kriter-datalab.static.hf.space/index.html), 12-nov-2026:
+
+| Control | Resultado |
+|---|---|
+| Título y encabezado | «Kriter DataLab» |
+| Ventas totales | 48,820,590.67 (igual al cálculo independiente sobre el CSV) |
+| Filtro por área «Norte» | 6,693,471.72 (igual al CSV); la serie conserva 80 semanas |
+| Restablecer filtros | Vuelve a 48,820,590.67 |
+| Productos y marcas | 25 filas visibles, 10 marcas en el ranking |
+| Áreas y periodos | 6 tarjetas y mapa de calor de 6 áreas × 19 meses |
+| Escenario base (8 semanas × 4) | 2,790,608.19 |
+| Exportación CSV | 350 filas; suma 48,820,590.67 |
+| Huella del dataset en «Datos y metodología» | Coincide con el SHA-256 del repositorio |
+| Aviso de datos sintéticos | Presente |
+| Recursos externos cargados | 0 |
+| Enlaces | Solo el enlace interno «Saltar al contenido» |
+| Vista estrecha (620 px) | Diseño móvil correcto, sin desbordamiento |
 
 ## 7. Límites
 
 - Pruebas en Chrome (motor Chromium), con móvil emulado. No se probó en Firefox, Safari ni en un teléfono físico.
 - Accesibilidad «básica»: no es una auditoría WCAG completa ni se probó con lector de pantalla.
-- El paso `hub-sync` no se ha ejecutado nunca contra Hugging Face; su configuración se revisó contra el `action.yml` de la versión `v0.3.0`.
+- La verificación sobre la URL pública se hizo en un navegador de escritorio con ventana estrecha; no en un teléfono físico ni sin sesión iniciada.
 - Todas las cifras del tablero son sintéticas y los escenarios son análisis de sensibilidad, no pronósticos.
 - El producto se llamaba «Kriter Sales Intelligence» en el paquete recibido; desde la versión 1.2.0 se llama **Kriter DataLab**, igual que el repositorio. Las ejecuciones y commits anteriores conservan el nombre antiguo en su historial.
 
 ## 8. Plan de 3 pasos
 
-1. **Tú (10 min):** crear Space y token, guardar `HF_SPACE_ID` y `HF_TOKEN`, pulsar *Run workflow*.
-2. **Verificación:** comprobar la URL real (gráficos, filtros, CSV, móvil) y pasar las fases 3, 6 y 7 a PASS.
-3. **Cierre:** añadir la URL al README y al *About* del repositorio; decidir licencia.
+1. **Difusión:** añadir la URL del Space al *About* del repositorio y a LinkedIn.
+2. **Comprobación externa:** abrir el Space en un teléfono y en una ventana privada (sin sesión).
+3. **Decisión pendiente:** licencia del código (hoy «derechos reservados», `license: other`).

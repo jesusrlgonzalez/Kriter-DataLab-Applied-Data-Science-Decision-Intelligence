@@ -1,9 +1,10 @@
 # Guía de publicación sin terminal
 
-**Estado al 12-nov-2026:** el código ya está publicado en GitHub y la validación automática pasa. Falta **solo** conectar Hugging Face, y eso requiere credenciales que únicamente tú puedes crear. Son 4 pasos, unos 10 minutos, todo en el navegador.
+**Estado al 12-nov-2026: publicado y verificado.** Los 4 pasos de abajo ya están hechos; se conservan como referencia por si hay que renovar el token o repetir la configuración.
+
+- Space en vivo: https://huggingface.co/spaces/JesusRLGonzalez/kriter-datalab
 
 - Repositorio: https://github.com/jesusrlgonzalez/Kriter-DataLab-Applied-Data-Science-Decision-Intelligence
-- Space que se creará: `JesusRLGonzalez/kriter-datalab`
 
 ## Lo que debes hacer tú (en este orden)
 
@@ -37,8 +38,6 @@
 2. **Run workflow** → rama `main` → **Run workflow**.
 3. Espera a que los trabajos `validar` y `deploy` queden en verde (≈1 minuto).
 4. Abre https://huggingface.co/spaces/JesusRLGonzalez/kriter-datalab y comprueba que carga el tablero.
-
-**Cuando termines, avísame** («Space publicado») y hago la verificación de la fase 7 sobre la URL real: gráficos, filtros, exportación y vista móvil.
 
 ## Opcional (recomendado)
 

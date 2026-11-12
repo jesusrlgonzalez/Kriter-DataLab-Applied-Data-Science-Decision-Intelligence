@@ -1,4 +1,4 @@
-# Control de liberación — 1.2.0
+# Control de liberación — 1.2.1
 
 | Control | Estado | Evidencia |
 |---|---|---|
@@ -7,6 +7,6 @@
 | Reproducción desde clon limpio | PASS | Hashes idénticos tras regenerar; ver `docs/INFORME_AUDITORIA.md` |
 | Cálculos, filtros, orden, CSV, escenarios, móvil y accesibilidad básica | PASS | `evidence/browser_checks.json` (28/28) |
 | Validación en GitHub Actions | PASS | Flujo «Publicar en Hugging Face Spaces», trabajo `validar` |
-| Space publicado y URL comprobada | BLOQUEADO | Faltan `HF_SPACE_ID` y `HF_TOKEN` (`docs/RUTA_SIN_TERMINAL.md`) |
+| Space publicado y URL comprobada | PASS | https://huggingface.co/spaces/JesusRLGonzalez/kriter-datalab · ejecución 43321716779 |
 
-**Criterio de salida:** no anunciar la URL del producto hasta comprobar el Space publicado.
+**Criterio de salida cumplido:** la URL pública se comprobó el 12-nov-2026.

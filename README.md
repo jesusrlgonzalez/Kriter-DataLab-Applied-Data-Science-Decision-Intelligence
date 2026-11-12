@@ -5,6 +5,8 @@
 
 Producto analítico estático para explorar tendencias de ventas, distribución comercial, concentración de portafolio y escenarios de sensibilidad. Se ejecuta desde un navegador moderno y puede desplegarse como Hugging Face Static Space.
 
+**Demo en vivo:** https://huggingface.co/spaces/JesusRLGonzalez/kriter-datalab
+
 > **Datos de demostración sintéticos.** No se publican datos de terceros ni se afirman resultados empresariales reales. Los cálculos, gráficos y filtros son funcionales y se ejecutan sobre el dataset incluido.
 
 ## Funciones
@@ -54,5 +56,5 @@ Lee **[la guía de publicación sin terminal](docs/RUTA_SIN_TERMINAL.md)** o **[
 
 ## Estado
 
-- **Disponible localmente:** dashboard empaquetado y verificable.
-- **Publicación remota:** requiere crear o conectar las cuentas y configurar secretos. Este repositorio no declara un enlace remoto hasta comprobar el despliegue.
+- **Publicado:** [Space en Hugging Face](https://huggingface.co/spaces/JesusRLGonzalez/kriter-datalab) · [pantalla completa](https://jesusrlgonzalez-kriter-datalab.static.hf.space/index.html). Verificado el 12-nov-2026 sobre la URL pública.
+- **Publicación automática:** cada push a `main` valida y sincroniza `site/` con el Space.

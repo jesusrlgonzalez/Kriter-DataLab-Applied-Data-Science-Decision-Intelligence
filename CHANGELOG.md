@@ -1,5 +1,10 @@
 # Cambios
 
+## 1.2.1 — 2026-11-12
+
+- Publicación en Hugging Face Spaces verificada sobre la URL pública.
+- Metadatos del Space: `license: other`, `short_description` y `colorTo: green` (Hugging Face no admite `cyan`).
+
 ## 1.2.0 — 2026-11-12
 
 - El producto pasa a llamarse **Kriter DataLab** (antes «Kriter Sales Intelligence») en la aplicación, la documentación, las pruebas y el Space previsto (`JesusRLGonzalez/kriter-datalab`).
