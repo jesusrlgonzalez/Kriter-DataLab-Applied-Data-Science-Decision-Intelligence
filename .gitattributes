@@ -1,6 +1,7 @@
-*.csv text eol=lf
+*.csv -text
 *.py text eol=lf
 *.html text eol=lf
 *.md text eol=lf
 *.yml text eol=lf
 *.js text eol=lf
+*.png binary
