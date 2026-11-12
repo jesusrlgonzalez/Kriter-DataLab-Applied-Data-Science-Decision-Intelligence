@@ -1,46 +1,61 @@
-# Publicación íntegramente con interfaz gráfica
+# Guía de publicación sin terminal
 
-Esta ruta no requiere instalar Python ni usar PowerShell. Se puede ejecutar desde Windows mediante GitHub Desktop y el navegador.
+**Estado al 12-nov-2026:** el código ya está publicado en GitHub y la validación automática pasa. Falta **solo** conectar Hugging Face, y eso requiere credenciales que únicamente tú puedes crear. Son 4 pasos, unos 10 minutos, todo en el navegador.
 
-## A. Repositorio GitHub
+- Repositorio: https://github.com/jesusrlgonzalez/Kriter-DataLab-Applied-Data-Science-Decision-Intelligence
+- Space que se creará: `JesusRLGonzalez/kriter-sales-intelligence`
 
-1. Descarga y descomprime el paquete `Kriter_Sales_Intelligence_GitHub_HuggingFace.zip`.
-2. Crea un repositorio GitHub llamado `kriter-sales-intelligence` bajo la cuenta u organización autorizada. No lo inicialices con archivos de ejemplo.
-3. Instala **GitHub Desktop** desde https://desktop.github.com/ e inicia sesión.
-4. En GitHub Desktop selecciona **File → Clone repository**, elige el repositorio recién creado y una carpeta vacía en Windows.
-5. Copia **el contenido** de la carpeta descomprimida `kriter-sales-intelligence` a la carpeta clonada, sin introducir un nivel de carpetas adicional.
-6. Comprueba que existen los directorios `site`, `src`, `tools`, `data`, `tests` y `.github/workflows` directamente en la raíz de la copia.
-7. En GitHub Desktop, escribe un mensaje de commit (por ejemplo `Release 1.0.0`) y presiona **Commit to main** y **Push origin**.
-8. Abre GitHub en el navegador y verifica que se ven `site/index.html`, `site/README.md` y los dos flujos YAML.
+## Lo que debes hacer tú (en este orden)
 
-## B. Space Hugging Face
+### Paso 1 · Crear el Space (2 min)
 
-1. Entra en https://huggingface.co/new-space.
-2. Crea un Space, por ejemplo `kriter-sales-intelligence`, de tipo **Static HTML**.
-3. Selecciona visibilidad pública solo porque los datos del paquete son completamente sintéticos.
-4. Anota el identificador exacto que aparece en la URL: `USUARIO_HF/kriter-sales-intelligence`.
-5. Crea un token personal **fine-grained** en Hugging Face con permiso para escribir en ese Space. No copies el token en el repositorio.
+1. Abre https://huggingface.co/new-space con tu sesión de `JesusRLGonzalez`.
+2. **Space name:** `kriter-sales-intelligence`.
+3. **Select the Space SDK:** *Static* → plantilla *Blank*.
+4. Visibilidad: **Public** (los datos son sintéticos).
+5. Pulsa **Create Space**. No subas ni edites archivos ahí: GitHub lo llenará.
 
-## C. Conectar GitHub con Hugging Face
+### Paso 2 · Crear el token de publicación (3 min)
 
-1. En GitHub, entra al repositorio → **Settings → Secrets and variables → Actions**.
-2. En **Variables** crea `HF_SPACE_ID` con `USUARIO_HF/kriter-sales-intelligence` (usa tu identificador real).
-3. En **Secrets** crea `HF_TOKEN` con el token de Hugging Face.
-4. Abre **Actions** → `Publicar en Hugging Face Spaces` → **Run workflow**.
-5. El flujo valida el conjunto sintético, recompila el sitio, ejecuta pruebas y sube únicamente `site/`.
-6. En el Space, abre **App** y prueba los filtros de región y marca, la navegación y la exportación de CSV.
-7. Copia la URL real del Space, no un marcador, y pruébala sin haber iniciado sesión.
+1. Abre https://huggingface.co/settings/tokens → **Create new token**.
+2. Tipo **Fine-grained**. Nombre: `github-kriter-sales-intelligence`.
+3. En **Repositories permissions**, busca y selecciona `spaces/JesusRLGonzalez/kriter-sales-intelligence` y marca **Write access to contents/settings of selected repos**. No marques nada más.
+4. **Create token** y copia el valor (empieza por `hf_`). Solo se muestra una vez. No lo pegues en ningún archivo ni chat.
 
-## D. Si no aparece la acción
+### Paso 3 · Guardar la variable y el secreto en GitHub (3 min)
 
-- Revisa que el repositorio tenga `main` como rama principal.
-- Confirma que `.github/workflows/deploy-huggingface.yml` se subió conservando la ruta exacta.
-- En **Settings → Actions** verifica que las acciones estén habilitadas.
+1. Abre https://github.com/jesusrlgonzalez/Kriter-DataLab-Applied-Data-Science-Decision-Intelligence/settings/variables/actions → **New repository variable**.
+   - Name: `HF_SPACE_ID`
+   - Value: `JesusRLGonzalez/kriter-sales-intelligence`
+2. Abre https://github.com/jesusrlgonzalez/Kriter-DataLab-Applied-Data-Science-Decision-Intelligence/settings/secrets/actions → **New repository secret**.
+   - Name: `HF_TOKEN`
+   - Secret: el token del paso 2.
 
-## E. Seguimiento
+### Paso 4 · Lanzar la publicación (2 min)
 
-Para futuras modificaciones: actualiza el repositorio mediante GitHub Desktop y usa **Push origin**. La publicación se automatiza al pasar las pruebas en `main`.
+1. Abre https://github.com/jesusrlgonzalez/Kriter-DataLab-Applied-Data-Science-Decision-Intelligence/actions/workflows/deploy-huggingface.yml
+2. **Run workflow** → rama `main` → **Run workflow**.
+3. Espera a que los trabajos `validar` y `deploy` queden en verde (≈1 minuto).
+4. Abre https://huggingface.co/spaces/JesusRLGonzalez/kriter-sales-intelligence y comprueba que carga el tablero.
 
-### Importante
+**Cuando termines, avísame** («Space publicado») y hago la verificación de la fase 7 sobre la URL real: gráficos, filtros, exportación y vista móvil.
 
-No subas el PBIX ni los archivos de ventas originales. Todo lo publicado en este producto es un conjunto sintético. El sitio no tiene autenticación y el código de un Space público puede consultarse y copiarse.
+## Opcional (recomendado)
+
+- En la página del repositorio, engrane de **About** → pega la URL del Space en *Website*.
+- En **Actions**, la primera ejecución aparece en rojo: fue el fallo real que detectó el control de integridad (finales de línea de los CSV) y que se corrigió en el commit siguiente. Puedes borrarla con el menú «…» → *Delete workflow run*.
+
+## Cómo seguir trabajando desde tu PC
+
+Tu carpeta `Kriter DataLab` no es un clon de git. Para editar en adelante:
+
+1. Instala **GitHub Desktop** (https://desktop.github.com) e inicia sesión como `jesusrlgonzalez`.
+2. **File → Clone repository** → elige el repositorio → carpeta vacía dentro de `Kriter DataLab`.
+3. Cambia archivos en `src/` (nunca `site/index.html` a mano). Para recompilar necesitas Python: `python tools/build.py` y `python tools/verify_release.py --write`. Si no quieres usar Python, pídemelo y lo hago yo.
+4. En GitHub Desktop: escribe el mensaje, **Commit to main**, **Push origin**. Cada push valida y publica solo.
+
+## Reglas
+
+- El Space es un espejo de `site/`: lo que edites directamente en Hugging Face se borra en la siguiente publicación.
+- No subas PBIX, archivos de ventas originales ni material académico. Todo lo público es sintético.
+- Autoría de los commits: `Jesús R. L. González`, sin coautores ni bots.
