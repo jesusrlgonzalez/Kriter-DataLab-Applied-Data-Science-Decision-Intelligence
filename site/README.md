@@ -2,7 +2,7 @@
 title: Kriter DataLab
 emoji: 📊
 colorFrom: blue
-colorTo: cyan
+colorTo: green
 sdk: static
 app_file: index.html
 pinned: false

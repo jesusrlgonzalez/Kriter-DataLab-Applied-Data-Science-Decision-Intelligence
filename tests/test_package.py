@@ -63,7 +63,7 @@ class TestDelivery(unittest.TestCase):
         self.assertTrue(rd.startswith('---\n'))
         self.assertIn('sdk: static',rd)
         self.assertIn('app_file: index.html',rd)
-        for line in ['title: Kriter DataLab','colorFrom: blue','colorTo: cyan']:
+        for line in ['title: Kriter DataLab','colorFrom: blue','colorTo: green']:
             self.assertIn(line,rd)
         self.assertEqual(sorted(p.name for p in (ROOT/'site').iterdir()),['README.md','index.html'])
         for banned in ['Dockerfile','requirements.txt','app.py']:
