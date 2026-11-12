@@ -1,6 +1,6 @@
 /*
 ==============================================================================
-Proyecto: Kriter Sales Intelligence
+Proyecto: Kriter DataLab
 Autor: Jesus R.L. Gonzalez
 Derechos Reservados (c) 2026
 ==============================================================================

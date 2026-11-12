@@ -1,5 +1,5 @@
 # ==============================================================================
-# Proyecto: Kriter Sales Intelligence
+# Proyecto: Kriter DataLab
 # Autor: Jesus R.L. Gonzalez
 # Derechos Reservados (c) 2026
 # ==============================================================================
@@ -16,7 +16,7 @@ manifest=root/'MANIFIESTO_SHA256.txt'
 SKIP={'.git','__pycache__','.pytest_cache','.venv','node_modules'}
 if '--write' in sys.argv:
     files=sorted(p for p in root.rglob('*') if p.is_file() and p!=manifest and not SKIP&set(p.relative_to(root).parts) and p.suffix!='.zip')
-    lines=['# Kriter Sales Intelligence - hashes SHA256 (archivos del repositorio)']
+    lines=['# Kriter DataLab - hashes SHA256 (archivos del repositorio)']
     lines+=[f"{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.relative_to(root).as_posix()}" for p in files]
     manifest.write_text('\n'.join(lines)+'\n','utf8',newline='\n')
     print(f'Manifiesto regenerado: {len(files)} archivos')

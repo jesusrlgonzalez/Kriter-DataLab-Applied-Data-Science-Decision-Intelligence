@@ -1,6 +1,6 @@
 # Titularidad y alcance
 
-**Proyecto:** Kriter Sales Intelligence  
+**Proyecto:** Kriter DataLab  
 **Autor identificado:** Jesus R.L. Gonzalez  
 **Aviso:** Derechos reservados (c) 2026.
 

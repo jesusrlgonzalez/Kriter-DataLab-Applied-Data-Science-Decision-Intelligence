@@ -1,7 +1,7 @@
-# Kriter Sales Intelligence
+# Kriter DataLab
 
-**Plataforma web de análisis comercial** · 2026  
-**Autor:** Jesus R.L. Gonzalez · **Marca:** Kriter Systems · **Portafolio:** Kriter DataLab
+**Applied Data Science & Decision Intelligence** · Plataforma web de análisis comercial · 2026  
+**Autor:** Jesus R.L. Gonzalez · **Marca:** Kriter Systems
 
 Producto analítico estático para explorar tendencias de ventas, distribución comercial, concentración de portafolio y escenarios de sensibilidad. Se ejecuta desde un navegador moderno y puede desplegarse como Hugging Face Static Space.
 

@@ -1,6 +1,6 @@
-# Informe de auditoría y despliegue — Kriter Sales Intelligence 1.1.0
+# Informe de auditoría y despliegue — Kriter DataLab 1.2.0
 
-**Fecha:** 12-nov-2026 · **Responsable:** Jesus R.L. Gonzalez · **Portafolio:** Kriter DataLab
+**Fecha:** 12-nov-2026 · **Responsable:** Jesus R.L. Gonzalez
 **Repositorio:** https://github.com/jesusrlgonzalez/Kriter-DataLab-Applied-Data-Science-Decision-Intelligence
 
 ## 1. Conclusión
@@ -22,7 +22,7 @@ Ninguna fase quedó en FAIL. Desbloqueo: `docs/RUTA_SIN_TERMINAL.md` (4 pasos, �
 
 ## 2. Fase 0 — Recepción
 
-- **Entrada:** la carpeta contenía el paquete ya descomprimido (`Kriter_Sales_Intelligence_GitHub_HuggingFace/kriter-sales-intelligence`, 27 archivos) y una copia del Space (`Kriter_Sales_Intelligence_Space_Estatico`). El archivo `.zip` no estaba en la carpeta; se auditó el contenido descomprimido.
+- **Entrada:** la carpeta contenía el paquete ya descomprimido (`Kriter_DataLab_GitHub_HuggingFace/kriter-datalab`, 27 archivos) y una copia del Space (`Kriter_DataLab_Space_Estatico`). El archivo `.zip` no estaba en la carpeta; se auditó el contenido descomprimido.
 - **Integridad:** los 27 archivos coincidían con su `MANIFIESTO_SHA256.txt`. `Space_Estatico/index.html` era idéntico byte a byte a `site/index.html`.
 - **Credenciales:** búsqueda de tokens de Hugging Face y GitHub, claves AWS, claves privadas y contraseñas: 0 coincidencias.
 - **Dependencias:** ninguna en ejecución (HTML, CSS y JavaScript propios, sin CDN ni tipografías externas). Compilación con la biblioteca estándar de Python. Playwright solo para la prueba de navegador.
@@ -34,7 +34,7 @@ Ninguna fase quedó en FAIL. Desbloqueo: `docs/RUTA_SIN_TERMINAL.md` (4 pasos, �
 | Conservar | `src/`, `tools/generate_data.py`, `tools/build.py`, `data/`, `NOTICE.md`, `SECURITY.md`, `docs/ARQUITECTURA.md`, `docs/DATOS_Y_LIMITACIONES.md` |
 | Modificar | `src/app.js`, `src/styles.css`, `src/template.html`, ambos flujos, `tests/test_package.py`, `tools/browser_smoke.py`, `tools/verify_release.py`, `.gitattributes`, `README.md`, `site/README.md`, guías |
 | Regenerar | `site/index.html`, `evidence/*`, `MANIFIESTO_SHA256.txt` |
-| No publicar | La copia duplicada `Kriter_Sales_Intelligence_Space_Estatico` (se obtiene de `site/`) |
+| No publicar | La copia duplicada `Kriter_DataLab_Space_Estatico` (se obtiene de `site/`) |
 
 ## 3. Hallazgos y correcciones
 
@@ -86,7 +86,7 @@ Capturas: `evidence/01_vista_escritorio.png`, `evidence/02_vista_movil.png`. Exp
 | Repositorio GitHub público con historial de un solo autor | PASS | Commits de `Jesús R. L. González`, sin coautores ni bots |
 | Validación en GitHub Actions | PASS | Ejecución 43314426639 (`validar` en verde, `deploy` omitido) |
 | Primera ejecución | FAIL corregido | Ejecución 43314235748: hallazgo n.º 1 |
-| Space `JesusRLGonzalez/kriter-sales-intelligence` | BLOCKED | No existe todavía; faltan `HF_SPACE_ID` y `HF_TOKEN` |
+| Space `JesusRLGonzalez/kriter-datalab` | BLOCKED | No existe todavía; faltan `HF_SPACE_ID` y `HF_TOKEN` |
 | Verificación sobre la URL pública | BLOCKED | Depende del punto anterior |
 
 ## 7. Límites
@@ -95,7 +95,7 @@ Capturas: `evidence/01_vista_escritorio.png`, `evidence/02_vista_movil.png`. Exp
 - Accesibilidad «básica»: no es una auditoría WCAG completa ni se probó con lector de pantalla.
 - El paso `hub-sync` no se ha ejecutado nunca contra Hugging Face; su configuración se revisó contra el `action.yml` de la versión `v0.3.0`.
 - Todas las cifras del tablero son sintéticas y los escenarios son análisis de sensibilidad, no pronósticos.
-- El repositorio lleva el nombre del portafolio y hoy contiene un solo proyecto en la raíz. Un segundo proyecto exigirá mover cada uno a su carpeta y ajustar `subdirectory`.
+- El producto se llamaba «Kriter Sales Intelligence» en el paquete recibido; desde la versión 1.2.0 se llama **Kriter DataLab**, igual que el repositorio. Las ejecuciones y commits anteriores conservan el nombre antiguo en su historial.
 
 ## 8. Plan de 3 pasos
 

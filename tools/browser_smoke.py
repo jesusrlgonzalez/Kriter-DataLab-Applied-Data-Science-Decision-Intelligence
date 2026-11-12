@@ -1,5 +1,5 @@
 # ==============================================================================
-# Proyecto: Kriter Sales Intelligence
+# Proyecto: Kriter DataLab
 # Autor: Jesus R.L. Gonzalez
 # Derechos Reservados (c) 2026
 # ==============================================================================
@@ -35,7 +35,7 @@ try:
         page.on('request',lambda req:requests.append(req.url))
         page.set_content((SITE/'index.html').read_text('utf8'),wait_until='load',timeout=30000)
         checks['carga_documento']=(page.locator('#page-resumen').count()==1)
-        checks['marca']=(page.title().startswith('Kriter Sales Intelligence'))
+        checks['marca']=(page.title().startswith('Kriter DataLab'))
         checks['aviso_sintetico']=('datos sintéticos' in page.locator('#page-resumen').inner_text().lower())
         checks['ventas_reconciliadas']=(page.locator('#kSales').inner_text()==formatter(total))
         checks['cobertura_registros']=('20,160 registros' in page.locator('#scope').inner_text())

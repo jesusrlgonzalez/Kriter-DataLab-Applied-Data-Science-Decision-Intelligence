@@ -1,5 +1,9 @@
 # Cambios
 
+## 1.2.0 — 2026-11-12
+
+- El producto pasa a llamarse **Kriter DataLab** (antes «Kriter Sales Intelligence») en la aplicación, la documentación, las pruebas y el Space previsto (`JesusRLGonzalez/kriter-datalab`).
+
 ## 1.1.0 — 2026-11-12
 
 - Accesibilidad: orden de la tabla operable con teclado (`aria-sort`), menú móvil con `aria-expanded` y cierre con Escape, barras seleccionadas con `aria-pressed`.

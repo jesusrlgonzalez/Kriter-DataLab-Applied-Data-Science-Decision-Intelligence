@@ -1,5 +1,5 @@
 # ==============================================================================
-# Proyecto: Kriter Sales Intelligence
+# Proyecto: Kriter DataLab
 # Autor: Jesus R.L. Gonzalez
 # Derechos Reservados (c) 2026
 # ==============================================================================
@@ -42,7 +42,7 @@ class TestDelivery(unittest.TestCase):
 
     def test_static_page_contract(self):
         self.assertTrue(self.html.lower().startswith('<!doctype html>'))
-        self.assertIn('Kriter Sales Intelligence',self.html)
+        self.assertIn('Kriter DataLab',self.html)
         self.assertIn('datos sintéticos',self.html.lower())
         self.assertIn(hashlib.sha256(self.csv_bytes).hexdigest(),self.html)
         for x in ['kSales','filterRegion','filterBrand','scenarioBase','chartWeekly','exportBtn']:
@@ -63,7 +63,7 @@ class TestDelivery(unittest.TestCase):
         self.assertTrue(rd.startswith('---\n'))
         self.assertIn('sdk: static',rd)
         self.assertIn('app_file: index.html',rd)
-        for line in ['title: Kriter Sales Intelligence','colorFrom: blue','colorTo: cyan']:
+        for line in ['title: Kriter DataLab','colorFrom: blue','colorTo: cyan']:
             self.assertIn(line,rd)
         self.assertEqual(sorted(p.name for p in (ROOT/'site').iterdir()),['README.md','index.html'])
         for banned in ['Dockerfile','requirements.txt','app.py']:

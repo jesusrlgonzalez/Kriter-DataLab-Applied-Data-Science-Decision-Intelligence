@@ -1,7 +1,7 @@
 # Despliegue: GitHub → Hugging Face Spaces
 
 Repositorio: https://github.com/jesusrlgonzalez/Kriter-DataLab-Applied-Data-Science-Decision-Intelligence
-Space previsto: `JesusRLGonzalez/kriter-sales-intelligence` (SDK `static`).
+Space previsto: `JesusRLGonzalez/kriter-datalab` (SDK `static`).
 
 ## Cómo funciona
 
@@ -25,7 +25,7 @@ En GitHub → **Settings → Secrets and variables → Actions**:
 
 | Tipo | Nombre | Valor |
 |---|---|---|
-| Variable | `HF_SPACE_ID` | `JesusRLGonzalez/kriter-sales-intelligence` |
+| Variable | `HF_SPACE_ID` | `JesusRLGonzalez/kriter-datalab` |
 | Secreto | `HF_TOKEN` | Token de Hugging Face con permiso de escritura sobre ese Space |
 
 No escribas el token en archivos, README ni URLs.

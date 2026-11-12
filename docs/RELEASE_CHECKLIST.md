@@ -1,4 +1,4 @@
-# Control de liberación — 1.1.0
+# Control de liberación — 1.2.0
 
 | Control | Estado | Evidencia |
 |---|---|---|

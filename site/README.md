@@ -1,5 +1,5 @@
 ---
-title: Kriter Sales Intelligence
+title: Kriter DataLab
 emoji: 📊
 colorFrom: blue
 colorTo: cyan
@@ -8,7 +8,7 @@ app_file: index.html
 pinned: false
 ---
 
-# Kriter Sales Intelligence
+# Kriter DataLab
 
 Panel interactivo para exploración comercial, desarrollado por **Jesus R.L. Gonzalez**.
 
