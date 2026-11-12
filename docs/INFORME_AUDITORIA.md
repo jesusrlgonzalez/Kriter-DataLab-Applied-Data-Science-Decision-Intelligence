@@ -22,7 +22,7 @@ Ninguna fase quedó en FAIL. Desbloqueo: `docs/RUTA_SIN_TERMINAL.md` (4 pasos, �
 
 ## 2. Fase 0 — Recepción
 
-- **Entrada:** la carpeta contenía el paquete ya descomprimido (`Kriter_DataLab_GitHub_HuggingFace/kriter-datalab`, 27 archivos) y una copia del Space (`Kriter_DataLab_Space_Estatico`). El archivo `.zip` no estaba en la carpeta; se auditó el contenido descomprimido.
+- **Entrada:** la carpeta contenía el paquete ya descomprimido (entonces con el nombre «Kriter Sales Intelligence», 27 archivos) y una copia del Space. El archivo `.zip` no estaba en la carpeta; se auditó el contenido descomprimido.
 - **Integridad:** los 27 archivos coincidían con su `MANIFIESTO_SHA256.txt`. `Space_Estatico/index.html` era idéntico byte a byte a `site/index.html`.
 - **Credenciales:** búsqueda de tokens de Hugging Face y GitHub, claves AWS, claves privadas y contraseñas: 0 coincidencias.
 - **Dependencias:** ninguna en ejecución (HTML, CSS y JavaScript propios, sin CDN ni tipografías externas). Compilación con la biblioteca estándar de Python. Playwright solo para la prueba de navegador.
@@ -34,7 +34,7 @@ Ninguna fase quedó en FAIL. Desbloqueo: `docs/RUTA_SIN_TERMINAL.md` (4 pasos, �
 | Conservar | `src/`, `tools/generate_data.py`, `tools/build.py`, `data/`, `NOTICE.md`, `SECURITY.md`, `docs/ARQUITECTURA.md`, `docs/DATOS_Y_LIMITACIONES.md` |
 | Modificar | `src/app.js`, `src/styles.css`, `src/template.html`, ambos flujos, `tests/test_package.py`, `tools/browser_smoke.py`, `tools/verify_release.py`, `.gitattributes`, `README.md`, `site/README.md`, guías |
 | Regenerar | `site/index.html`, `evidence/*`, `MANIFIESTO_SHA256.txt` |
-| No publicar | La copia duplicada `Kriter_DataLab_Space_Estatico` (se obtiene de `site/`) |
+| No publicar | La copia duplicada del Space (se obtiene de `site/`) |
 
 ## 3. Hallazgos y correcciones
 
@@ -62,7 +62,7 @@ Clon limpio del repositorio, borrado de `data/demo_sales.csv` y `site/index.html
 | Archivo | SHA-256 (versionado = regenerado) |
 |---|---|
 | `data/demo_sales.csv` | `e33df39cd5be722fc828179bcee16fe43f1c20671d48b17cbb90d0998898bfa6` |
-| `site/index.html` | `426effa6ed621a0b13a9fea060a8083d8873b14ca6f0d7f39d8fa4337fee41cb` |
+| `site/index.html` | `7ac69b4e429c4fed2bdd6efc4712c59603bf41e82630eb346207b9fda9182748` |
 
 El dataset no cambió frente al paquete recibido. `site/index.html` cambió porque cambiaron sus fuentes en `src/`; nunca se editó a mano. Pruebas unitarias: 9/9. GitHub Actions repite lo mismo y compara con `git diff --exit-code`.
 
@@ -84,7 +84,7 @@ Capturas: `evidence/01_vista_escritorio.png`, `evidence/02_vista_movil.png`. Exp
 | Elemento | Estado | Evidencia |
 |---|---|---|
 | Repositorio GitHub público con historial de un solo autor | PASS | Commits de `Jesús R. L. González`, sin coautores ni bots |
-| Validación en GitHub Actions | PASS | Ejecución 43314426639 (`validar` en verde, `deploy` omitido) |
+| Validación en GitHub Actions | PASS | Ejecución 43316184984 (`validar` en verde, `deploy` omitido) |
 | Primera ejecución | FAIL corregido | Ejecución 43314235748: hallazgo n.º 1 |
 | Space `JesusRLGonzalez/kriter-datalab` | BLOCKED | No existe todavía; faltan `HF_SPACE_ID` y `HF_TOKEN` |
 | Verificación sobre la URL pública | BLOCKED | Depende del punto anterior |
