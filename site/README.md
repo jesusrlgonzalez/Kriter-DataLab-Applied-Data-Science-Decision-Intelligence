@@ -6,6 +6,8 @@ colorTo: cyan
 sdk: static
 app_file: index.html
 pinned: false
+license: other
+short_description: Analítica comercial interactiva con datos sintéticos
 ---
 
 # Kriter DataLab
