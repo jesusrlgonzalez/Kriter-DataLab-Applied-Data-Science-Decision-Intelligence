@@ -1,0 +1,51 @@
+name: Publicar la versión candidata (RLS) en un Space aparte
+# Solo se ejecuta a mano: ninguna version candidata se publica de forma
+# automatica. Nunca escribe en el Space de produccion.
+on:
+  workflow_dispatch:
+    inputs:
+      confirmacion:
+        description: Escribe PUBLICAR para confirmar
+        required: true
+        default: ''
+permissions:
+  contents: read
+concurrency:
+  group: publicar-candidata
+  cancel-in-progress: false
+jobs:
+  validar:
+    if: ${{ github.event.inputs.confirmacion == 'PUBLICAR' }}
+    uses: ./.github/workflows/ci.yml
+  deploy:
+    needs: validar
+    if: ${{ vars.HF_CANDIDATE_SPACE_ID != '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - name: Verificar credenciales y destino
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          CANDIDATO: ${{ vars.HF_CANDIDATE_SPACE_ID }}
+          PRODUCCION: ${{ vars.HF_SPACE_ID }}
+        run: |
+          test -n "$HF_TOKEN" || { echo '::error::Falta el secreto HF_TOKEN'; exit 1; }
+          if [ "$CANDIDATO" = "$PRODUCCION" ]; then
+            echo "::error::HF_CANDIDATE_SPACE_ID no puede ser el Space de producción ($PRODUCCION)"
+            exit 1
+          fi
+          echo "Destino candidato: $CANDIDATO"
+      - uses: huggingface/hub-sync@v0.3.0
+        with:
+          github_repo_id: ${{ github.repository }}
+          huggingface_repo_id: ${{ vars.HF_CANDIDATE_SPACE_ID }}
+          hf_token: ${{ secrets.HF_TOKEN }}
+          repo_type: space
+          space_sdk: static
+          subdirectory: site-secure
+          delete_removed: 'true'
+      - name: Resumen
+        env:
+          CANDIDATO: ${{ vars.HF_CANDIDATE_SPACE_ID }}
+        run: echo "Candidata publicada en https://huggingface.co/spaces/${CANDIDATO}" >> "$GITHUB_STEP_SUMMARY"

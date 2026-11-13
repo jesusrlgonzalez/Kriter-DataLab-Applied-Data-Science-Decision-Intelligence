@@ -14,3 +14,8 @@ original_data/
 private/
 artifacts/
 node_modules/
+
+# Credenciales locales de pruebas (nunca se versionan)
+.env
+.env.local
+supabase/qa/credenciales_local.*

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+  Kriter DataLab | Applied Data Science & Decision Intelligence
+  Autor: Jesus R.L. Gonzalez - Kriter Systems - Derechos reservados (c) 2026
+  Aplicacion estatica. La autorizacion se aplica en PostgreSQL mediante Row Level
+  Security; este archivo no contiene datos comerciales ni claves privilegiadas.
+-->
+<title>Kriter DataLab | Analitica comercial con control de acceso</title>
+<style>__KRITER_CSS__</style>
+<meta name="theme-color" content="#102738">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="Kriter DataLab · Applied Data Science &amp; Decision Intelligence">
+<meta property="og:description" content="Tablero comercial con autenticacion, roles y seguridad a nivel de filas sobre PostgreSQL.">
+</head>
+<body>
+<a href="#page-resumen" class="skip-link">Saltar al contenido</a>
+<div class="app">
+<aside class="side" id="sidebar" aria-label="Secciones del informe">
+  <div class="brand">
+    <div class="brand-line"><div class="brand-symbol">K</div><div class="brand-name">KRITER <small>DATALAB</small></div></div>
+    <div style="font-size:11px;color:#95b4c5;margin-top:16px">Operación comercial · Analytics</div>
+  </div>
+  <p class="side-tag">Explorar el informe</p>
+  <nav class="nav" aria-label="Navegación principal">
+    <button class="active" data-page="resumen" aria-current="page"><span style="font-size:19px">▣</span> Resumen ejecutivo</button>
+    <button data-page="productos"><span style="font-size:19px">▥</span> Productos y marcas</button>
+    <button data-page="territorios"><span style="font-size:19px">◫</span> Áreas y periodos</button>
+    <button data-page="escenarios"><span style="font-size:19px">◈</span> Simulación comercial</button>
+    <button data-page="metodologia"><span style="font-size:19px">≡</span> Datos y metodología</button>
+    <button data-page="bitacora" id="navAudit" hidden><span style="font-size:19px">⚿</span> Bitácora de seguridad</button>
+  </nav>
+  <div class="side-bottom">
+    <p><span class="offline-dot"></span>Datos en PostgreSQL con RLS</p>
+    <p>Autorización verificada en el servidor</p>
+    <p>Jesus R.L. Gonzalez · 2026</p>
+  </div>
+</aside>
+<div class="main">
+  <header class="top">
+    <div class="inline-row" style="gap:12px"><button class="button mobile-menu" id="showMenu" aria-label="Mostrar menú" aria-controls="sidebar" aria-expanded="false">☰</button><div><div class="eyebrow">Kriter Systems · Inteligencia comercial</div><h1>Kriter DataLab</h1><div class="top-sub">Análisis comercial con autenticación y seguridad por filas · 2024–2025</div></div></div>
+    <div class="top-actions">
+      <div class="session-box">
+        <span class="tag" id="sessionTag">● Conectando…</span>
+        <div class="session-id"><strong id="sessionName">—</strong><small id="sessionScope">Comprobando permisos…</small></div>
+        <button id="loginBtn" class="button" hidden>Iniciar sesión</button>
+        <button id="logoutBtn" class="button" hidden>Cerrar sesión</button>
+      </div>
+      <button id="exportBtn" class="button primary">↓ Exportar CSV</button>
+    </div>
+  </header>
+  <main class="wrap">
+    <div class="warning" id="appError" hidden style="margin-bottom:16px"><strong>No se pudo completar la consulta.</strong> <span id="appErrorText"></span> <button id="retryBtn" class="linkbtn">Reintentar ↺</button></div>
+    <section class="filter-panel" aria-label="Filtros globales">
+      <div class="filter-head"><div class="filter-title">☷ &nbsp;Filtros del informe</div><button id="resetBtn" class="linkbtn">Restablecer filtros ↺</button></div>
+      <div class="filter-grid">
+        <div class="filter-group"><label for="filterYear">Año</label><select id="filterYear"><option value="">Todos los años</option></select></div>
+        <div class="filter-group"><label for="filterRegion">Área comercial</label><select id="filterRegion"><option value="">Todas mis áreas</option></select></div>
+        <div class="filter-group"><label for="filterSegment">Segmento</label><select id="filterSegment"><option value="">Todos los segmentos</option></select></div>
+        <div class="filter-group"><label for="filterBrand">Marca</label><select id="filterBrand"><option value="">Todas las marcas</option></select></div>
+        <div class="filter-group"><label for="filterFrom">Semana desde</label><select id="filterFrom"><option value="">Primera semana</option></select></div>
+        <div class="filter-group"><label for="filterTo">Semana hasta</label><select id="filterTo"><option value="">Última semana</option></select></div>
+      </div>
+      <div class="filter-bar"><span id="scope" role="status" aria-live="polite">Conectando con el servidor de datos…</span><span><strong>Datos sintéticos.</strong> <span id="roleMatrixNote">El servidor decide qué filas puede ver tu perfil.</span></span></div>
+    </section>
+
+    <section class="page active" id="page-resumen">
+      <div class="warning" style="margin-bottom:18px"><strong>Entorno de demostración:</strong> datos sintéticos para explorar decisiones comerciales. No representan ventas ni resultados de una empresa real.</div>
+      <div class="page-title"><div><div class="section-label">01 / TABLERO PRINCIPAL</div><h2>Resumen ejecutivo</h2><p>Panorama de ventas, evolución temporal y concentración del portafolio, limitado a tus áreas autorizadas.</p></div><span class="panel-badge">Agregado en PostgreSQL</span></div>
+      <div class="cards">
+        <div class="metric"><div class="kname">Ventas en valor</div><strong id="kSales">—</strong><small>Unidades de valor simuladas</small></div>
+        <div class="metric"><div class="kname">Unidades registradas</div><strong id="kUnits">—</strong><small>Unidades en el escenario simulado</small></div>
+        <div class="metric"><div class="kname">Productos distintos</div><strong id="kProducts">—</strong><small>Identificadores con actividad</small></div>
+        <div class="metric"><div class="kname">Promedio por semana</div><strong id="kAverage">—</strong><small>Semanas con registros</small></div>
+      </div>
+      <div class="layout">
+        <article class="panel span"><div class="panel-head"><div><div class="label">TENDENCIA</div><h3>Evolución semanal del valor de ventas</h3><p class="desc">Cada punto representa una semana observada; pasa el cursor para consultar su importe.</p></div><div class="panel-badge" id="weeksLabel">—</div></div><svg id="chartWeekly" class="svgchart" viewBox="0 0 1000 260" role="img" aria-label="Gráfico de línea de ventas semanales"></svg></article>
+        <article class="panel"><div class="panel-head"><div><div class="label">MIX DE NEGOCIO</div><h3>Valor por segmento</h3><p class="desc">Selecciona una barra para filtrar por segmento.</p></div></div><div id="chartSegments" class="bar-list"></div></article>
+        <article class="panel"><div class="panel-head"><div><div class="label">DISTRIBUCIÓN COMERCIAL</div><h3>Valor por área</h3><p class="desc">Solo aparecen las áreas que tu perfil tiene autorizadas.</p></div></div><div id="chartAreas" class="bar-list"></div></article>
+        <article class="panel span"><div class="panel-head"><div><div class="label">LECTURA DE RESULTADOS</div><h3>Interpretación del periodo filtrado</h3></div></div><div class="mini-grid"><div class="mini-stat"><span>Segmento principal</span><strong id="insightSegment">—</strong></div><div class="mini-stat"><span>Área de mayor aporte</span><strong id="insightRegion">—</strong></div><div class="mini-stat"><span>Marca líder</span><strong id="insightBrand">—</strong></div></div><div id="insightNarrative" class="section-notes"></div></article>
+      </div>
+    </section>
+
+    <section class="page" id="page-productos">
+      <div class="page-title"><div><div class="section-label">02 / PORTAFOLIO</div><h2>Productos y marcas</h2><p>Ránking de marcas, composición por segmento y detalle del portafolio autorizado.</p></div></div>
+      <div class="layout">
+        <article class="panel"><div class="panel-head"><div><div class="label">TOP 10</div><h3>Marcas por valor</h3><p class="desc">Orden descendente; haz clic para filtrar la marca.</p></div></div><div id="chartBrands" class="bar-list"></div></article>
+        <article class="panel"><div class="panel-head"><div><div class="label">CONCENTRACIÓN</div><h3>Distribución por segmento</h3><p class="desc">Importes y participación porcentual del filtro actual.</p></div></div><div id="segmentDetail" class="bar-list"></div><p class="tooltip-note" style="margin-top:15px">Comparación del portafolio por segmento, calculada en el servidor sobre los filtros activos.</p></article>
+        <article class="panel span"><div class="panel-head"><div><div class="label">DETALLE ANALÍTICO</div><h3>Productos con actividad</h3><p class="desc">La búsqueda, el orden y la paginación se resuelven en PostgreSQL: el navegador nunca recibe la tabla completa.</p></div><span class="panel-badge" id="tableCount">—</span></div>
+          <div class="tablebar"><input class="search" id="productSearch" type="search" placeholder="Buscar producto, código o marca…" aria-label="Buscar dentro de productos"><span class="tooltip-note" id="tableHint">Ordenado por valor</span></div>
+          <div class="tablewrap"><table class="table"><thead><tr><th>#</th><th>Producto y código</th><th>Marca</th><th>Segmento</th><th class="num sortable" data-sort="valor" data-label="Valor" tabindex="0" role="columnheader" aria-sort="descending" title="Ordenar por valor">Valor ↓</th><th class="num sortable" data-sort="unidades" data-label="Unidades" tabindex="0" role="columnheader" aria-sort="none" title="Ordenar por unidades">Unidades</th><th class="num">Participación</th></tr></thead><tbody id="productRows"></tbody></table></div>
+          <div class="pager"><button id="prevPage" class="button" disabled>← Anteriores</button><span id="pageInfo" class="tooltip-note">—</span><button id="nextPage" class="button" disabled>Siguientes →</button></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="page" id="page-territorios">
+      <div class="page-title"><div><div class="section-label">03 / DISTRIBUCIÓN</div><h2>Áreas y periodos</h2><p>Comparación regional sin atribuir coordenadas inexistentes.</p></div></div>
+      <div class="layout">
+        <article class="panel span"><div class="panel-head"><div><div class="label">ÁREAS AUTORIZADAS</div><h3>Contribución de las áreas</h3><p class="desc">Solo se listan las áreas que tu perfil puede consultar.</p></div></div><div id="areaCards" class="area-summary"></div></article>
+        <article class="panel span"><div class="panel-head"><div><div class="label">ESTACIONALIDAD DESCRIPTIVA</div><h3>Valor mensual por área</h3><p class="desc">Mapa de calor tabular, no mapa geográfico. Intensidad relativa al máximo del periodo filtrado.</p></div></div><div id="heatmap" class="heat-wrap"></div></article>
+        <article class="panel span"><div class="warning"><strong>Acerca de las áreas:</strong> las seis áreas son unidades comerciales ficticias. El mapa de calor compara resultados por periodo y no representa coordenadas geográficas.</div></article>
+      </div>
+    </section>
+
+    <section class="page" id="page-escenarios">
+      <div class="page-title"><div><div class="section-label">04 / PLANIFICACIÓN</div><h2>Simulación comercial</h2><p>Escenarios exploratorios basados en promedios históricos; no son predicciones calibradas.</p></div></div>
+      <div class="layout">
+        <article class="panel span" id="scenarioDenied" hidden><div class="warning"><strong>Simulación no autorizada.</strong> Tu perfil actual no incluye la simulación de escenarios. El servidor deniega la consulta: no es una restricción visual. Inicia sesión con un perfil de administrador, gerente regional o analista.</div></article>
+        <article class="panel span" id="scenarioPanel" hidden><div class="panel-head"><div><div class="label">PARÁMETROS</div><h3>Ajusta la hipótesis</h3><p class="desc">El cálculo se ejecuta en PostgreSQL utilizando únicamente las semanas que tu perfil puede consultar.</p></div></div>
+          <div class="scenario-controls">
+            <label>Ventana histórica<select id="scenarioWindow"><option value="4">Últimas 4 semanas</option><option value="8" selected>Últimas 8 semanas</option><option value="12">Últimas 12 semanas</option><option value="16">Últimas 16 semanas</option></select></label>
+            <label>Horizonte hipotético<select id="scenarioHorizon"><option value="2">2 semanas</option><option value="4" selected>4 semanas</option><option value="8">8 semanas</option><option value="12">12 semanas</option></select></label>
+            <label>Variación conservadora / optimista: <strong id="scenarioPctLabel">±18 %</strong><input type="range" id="scenarioPct" min="0" max="30" value="18" step="1"></label>
+          </div>
+          <div class="scenario-cards"><div class="scenario-card conserv"><small>Conservador</small><strong id="scenarioLow">—</strong><small id="scenarioLowDetail">—</small></div><div class="scenario-card base"><small>Base</small><strong id="scenarioBase">—</strong><small id="scenarioBaseDetail">—</small></div><div class="scenario-card optim"><small>Optimista</small><strong id="scenarioHigh">—</strong><small id="scenarioHighDetail">—</small></div></div>
+          <div id="scenarioBars" class="scenario-bars"></div>
+          <div id="scenarioNote" class="section-notes"></div>
+        </article>
+        <article class="panel span"><div class="warning"><strong>Advertencia de inferencia:</strong> el promedio histórico de una ventana seleccionada se proyecta plano al horizonte escogido, aplicando multiplicadores hipotéticos. El resultado es un análisis de sensibilidad y no una promesa de ventas, un intervalo de confianza ni una previsión validada.</div></article>
+      </div>
+    </section>
+
+    <section class="page" id="page-metodologia">
+      <div class="page-title"><div><div class="section-label">05 / GOBIERNO DE DATOS</div><h2>Datos y metodología</h2><p>Trazabilidad, alcance autorizado y límites de interpretación.</p></div></div>
+      <div class="layout">
+        <article class="panel"><div class="panel-head"><div><div class="label">CONTROL DE ACCESO</div><h3>Alcance verificado para tu sesión</h3></div></div><table class="audit-table"><tbody id="auditRows"></tbody></table></article>
+        <article class="panel"><div class="panel-head"><div><div class="label">GOBIERNO</div><h3>Reglas de seguridad y transformación</h3></div></div><div class="factors"><div><div class="fact"><div class="title">Autorización en el servidor</div><div class="body">Las políticas de Row Level Security se evalúan en PostgreSQL. Manipular la petición HTTP o el código del navegador no amplía el alcance.</div></div><div class="fact"><div class="title">Denegación por defecto</div><div class="body">Ninguna tabla protegida es legible sin una política explícita, y ninguna admite escritura desde el navegador.</div></div><div class="fact"><div class="title">Agregación protegida</div><div class="body">Los KPI, gráficos, escenarios y exportaciones se calculan dentro de funciones que respetan RLS, no sobre descargas completas.</div></div></div><div><div class="fact"><div class="title">Identidad verificada</div><div class="body">La identidad proviene de Supabase Auth. El navegador no puede declarar su rol ni sus áreas.</div></div><div class="fact"><div class="title">Sin privilegios en el cliente</div><div class="body">La aplicación solo incorpora la URL del proyecto y la clave publicable, ambas públicas por diseño.</div></div><div class="fact"><div class="title">Datos sintéticos</div><div class="body">El conjunto publicado es sintético y reproducible. No contiene información de clientes ni resultados empresariales reales.</div></div></div></div></article>
+        <article class="panel span"><div class="panel-head"><div><div class="label">ALCANCE</div><h3>Uso responsable del tablero</h3></div></div><div class="section-notes"><strong>Alcance de producto:</strong> herramienta de exploración y simulación comercial con autorización por filas. Los datos son sintéticos; las cifras no corresponden a clientes ni actividades de negocio reales. Las proyecciones son hipótesis ajustables, no pronósticos calibrados. <strong>Esta aplicación no implementa el RLS nativo de Microsoft Power BI</strong>: la autorización se aplica en PostgreSQL mediante Supabase.</div></article>
+      </div>
+    </section>
+
+    <section class="page" id="page-bitacora">
+      <div class="page-title"><div><div class="section-label">06 / AUDITORÍA</div><h2>Bitácora de seguridad</h2><p>Eventos recientes de acceso y denegación. Visible únicamente para perfiles con permiso de auditoría.</p></div></div>
+      <div class="layout">
+        <article class="panel span"><div class="panel-head"><div><div class="label">ÚLTIMOS 60 EVENTOS</div><h3>Registro de acceso</h3><p class="desc">Los eventos marcados como <em>servidor</em> los escribe PostgreSQL; los marcados como <em>cliente</em> son denegaciones reportadas por la aplicación. Las denegaciones que revierten la transacción quedan además en el log del servidor.</p></div></div><div class="tablewrap"><table class="table"><thead><tr><th>Fecha</th><th>Evento</th><th>Origen</th><th>Detalle</th></tr></thead><tbody id="logRows"></tbody></table></div></article>
+      </div>
+    </section>
+
+    <footer class="footer">Kriter DataLab · © 2026 Jesus R.L. Gonzalez · Kriter Systems<br>Datos sintéticos reproducibles · Autorización por filas en PostgreSQL · Aplicación web estática</footer>
+  </main>
+</div>
+</div>
+
+<div class="dialog-backdrop" id="loginDialog" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+    <h3 id="loginTitle">Iniciar sesión</h3>
+    <p class="desc">Tu identidad determina las áreas comerciales que el servidor autoriza. Sin iniciar sesión solo se muestra el área pública de demostración.</p>
+    <form id="loginForm">
+      <label for="loginEmail">Correo electrónico</label>
+      <input id="loginEmail" type="email" autocomplete="username" required>
+      <label for="loginPass">Contraseña</label>
+      <input id="loginPass" type="password" autocomplete="current-password" required>
+      <p class="warning" id="loginError" hidden></p>
+      <div class="dialog-actions">
+        <button type="button" class="button" id="loginCancel">Cancelar</button>
+        <button type="submit" class="button primary" id="loginSubmit">Entrar</button>
+      </div>
+    </form>
+    <button type="button" class="button" id="githubBtn" hidden style="width:100%;margin-top:10px">Continuar con GitHub</button>
+    <p class="tooltip-note" style="margin-top:12px">Las credenciales viajan directamente a Supabase Auth. Esta aplicación no las almacena ni las registra.</p>
+  </div>
+</div>
+
+<script>window.KRITER_CONFIG=__KRITER_CONFIG__;</script>
+<script>__KRITER_VENDOR__</script>
+<script>__KRITER_JS__</script>
+</body>
+</html>

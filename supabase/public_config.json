@@ -1,0 +1,6 @@
+{
+  "url": "https://nnutikucpezhnnkawczp.supabase.co",
+  "key": "sb_publishable_UyJfKNvy2HejfO9tfqellA_xWWGn42W",
+  "github_oauth": false,
+  "_nota": "Credenciales publicas por diseño: la clave publicable solo permite lo que autorizan las politicas RLS. Las claves privilegiadas (service_role) no se guardan en el repositorio ni en el artefacto."
+}

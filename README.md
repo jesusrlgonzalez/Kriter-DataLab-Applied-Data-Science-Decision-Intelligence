@@ -3,7 +3,16 @@
 **Applied Data Science & Decision Intelligence** · Plataforma web de análisis comercial · 2026  
 **Autor:** Jesus R.L. Gonzalez · **Marca:** Kriter Systems
 
-Producto analítico estático para explorar tendencias de ventas, distribución comercial, concentración de portafolio y escenarios de sensibilidad. Se ejecuta desde un navegador moderno y puede desplegarse como Hugging Face Static Space.
+Producto analítico para explorar tendencias de ventas, distribución comercial, concentración de portafolio y escenarios de sensibilidad. Se despliega como Hugging Face Static Space.
+
+El repositorio contiene **dos versiones del mismo producto**:
+
+| Versión | Carpeta | Qué hace | Estado |
+|---|---|---|---|
+| **Pública** | `site/` | Tablero estático; los datos viajan incrustados en el HTML | Publicada y verificada |
+| **Candidata con control de acceso** | `site-secure/` | Mismo tablero contra PostgreSQL (Supabase) con autenticación, roles y **Row Level Security** | Validada; pendiente de publicar en un Space aparte |
+
+La versión pública **no se sustituye** hasta autorizar expresamente el cambio.
 
 **Demo en vivo:** https://huggingface.co/spaces/JesusRLGonzalez/kriter-datalab
 
@@ -17,6 +26,29 @@ Producto analítico estático para explorar tendencias de ventas, distribución 
 - Mapa de calor por área y mes.
 - Simulación con horizonte, ventana histórica y amplitud de sensibilidad ajustables.
 - Adaptación a pantallas móviles y navegación sin dependencias externas.
+
+## Versión candidata: autenticación y seguridad por filas
+
+Cada perfil ve únicamente las áreas comerciales que tiene asignadas, y la
+autorización se evalúa en PostgreSQL, no en el navegador.
+
+| Perfil | Áreas | Escenarios | Exportar | Bitácora |
+|---|---|:-:|:-:|:-:|
+| Administrador | Todas | Sí | Sí | Sí |
+| Gerente regional | Asignadas | Sí | Sí | No |
+| Analista | Asignadas | Sí | Sí | No |
+| Auditor | Asignadas | No | Sí | Sí |
+| Visitante o usuario sin rol | Solo el área pública | No | No | No |
+
+```bash
+python tools/build_secure.py      # compila site-secure/index.html
+python tools/security_scan.py     # comprueba que no se publican credenciales ni datos
+node tests/adversarial_http.mjs   # 20 casos adversariales con identidades reales
+```
+
+Detalle en **[arquitectura](docs/ARQUITECTURA_SUPABASE.md)**,
+**[modelo de seguridad](docs/MODELO_SEGURIDAD_RLS.md)**,
+**[administración](docs/ADMINISTRACION.md)** y **[plan de reversión](docs/REVERSION.md)**.
 
 ## Inicio local
 
@@ -53,8 +85,15 @@ Lee **[la guía de publicación sin terminal](docs/RUTA_SIN_TERMINAL.md)** o **[
 - [Aviso de derechos y uso](NOTICE.md)
 - [Consideraciones de seguridad](SECURITY.md)
 - [Informe de auditoría y estados por fase](docs/INFORME_AUDITORIA.md)
+- [Arquitectura con Supabase y RLS](docs/ARQUITECTURA_SUPABASE.md)
+- [Modelo de seguridad y límites](docs/MODELO_SEGURIDAD_RLS.md)
+- [Manual de administración](docs/ADMINISTRACION.md)
+- [Plan de reversión](docs/REVERSION.md)
+- [Carga reproducible del dataset](tools/CARGA_DATASET.md)
+- [Dictamen técnico de la migración](docs/DICTAMEN_MIGRACION_RLS.md)
 
 ## Estado
 
 - **Publicado:** [Space en Hugging Face](https://huggingface.co/spaces/JesusRLGonzalez/kriter-datalab) · [pantalla completa](https://jesusrlgonzalez-kriter-datalab.static.hf.space/index.html). Verificado el 12-nov-2026 sobre la URL pública.
 - **Publicación automática:** cada push a `main` valida y sincroniza `site/` con el Space.
+- **Candidata con RLS:** validada sobre el proyecto Supabase `kriter-analytics` (20/20 casos adversariales en verde). Su publicación es **manual** y exige un Space distinto del de producción.
