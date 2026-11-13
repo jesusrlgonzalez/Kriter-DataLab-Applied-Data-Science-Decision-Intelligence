@@ -29,6 +29,13 @@ documentacion.
   Power BI.
 - Los nombres de los archivos de migracion 12 y 13 ahora coinciden exactamente
   con las versiones aplicadas en la base.
+- **Corrige un dato erroneo de la documentacion anterior:** la comprobacion de
+  contrasenas filtradas de Supabase **no es gratuita**, solo esta disponible en
+  el plan Pro y superiores. En su lugar se aplicaron cinco controles
+  compensatorios gratuitos sobre el proveedor de correo: longitud minima de 12
+  caracteres, exigencia de minusculas, mayusculas, digitos y simbolos, cambio
+  seguro de contrasena, exigencia de la contrasena actual al actualizarla y
+  confirmacion de que los registros anonimos siguen desactivados.
 
 ## 2.1.0 — 2026-11-13
 

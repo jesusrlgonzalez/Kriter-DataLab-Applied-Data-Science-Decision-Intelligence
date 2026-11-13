@@ -85,14 +85,37 @@ alternativa descartada y el control compensatorio.
 | Evidencia no repudiable | El `raise log` de `app.log_security_event` en el log de PostgreSQL, que el cliente no puede escribir ni alterar |
 | Revisión | Al retirar las identidades de prueba o al pasar a datos reales |
 
-### 5.2 Protección contra contraseñas filtradas
+### 5.2 Protección contra contraseñas filtradas: **no disponible a coste cero**
 
 | Campo | Contenido |
 |---|---|
-| Aviso | *Leaked password protection disabled* |
-| Decisión | **Pendiente de acción del titular del proyecto** (no es modificable por migración SQL: es un ajuste del panel de Auth) |
-| Procedimiento | Panel de Supabase → *Authentication → Policies* → activar *Prevent use of leaked passwords* |
-| Mientras no esté activa | Las identidades de prueba usan contraseñas generadas de 32 caracteres, que no figuran en listas de filtraciones conocidas |
+| Aviso | *Leaked Password Protection Disabled* |
+| Hallazgo | El panel declara literalmente que esta comprobación, basada en la API de HaveIBeenPwned, **solo está disponible en el plan Pro y superiores**. No es un ajuste gratuito |
+| Decisión | **No se activa.** La restricción de coste cero del proyecto es una condición de diseño, no una preferencia: activarla exigiría un plan de pago |
+| Verificado | 13-nov-2026, en *Authentication → Providers → Email*, con la sesión real del proyecto |
+| Estado del aviso | Permanecerá abierto mientras el proyecto siga en el plan gratuito. Se declara, no se oculta |
+
+**Controles compensatorios aplicados el 13-nov-2026**, todos gratuitos y
+verificados con el mensaje *Successfully updated settings*:
+
+| Control | Antes | Ahora | Qué mitiga |
+|---|---|---|---|
+| Longitud mínima de contraseña | 6 caracteres | **12 caracteres** | Las contraseñas cortas son las que figuran en las listas de filtraciones |
+| Requisitos de composición | Sin requisitos | **Minúsculas, mayúsculas, dígitos y símbolos** | Excluye las contraseñas de diccionario, que son el grueso de lo filtrado |
+| Cambio seguro de contraseña | Desactivado | **Activado** | Una sesión robada de más de 24 h no puede cambiar la contraseña sin volver a autenticarse |
+| Exigir la contraseña actual al cambiarla | Desactivado | **Activado** | Impide el secuestro de cuenta desde una sesión abierta ajena |
+| Registros anónimos | Desactivado | Desactivado | Se confirma que no hay identidades sin verificar |
+
+Una contraseña de 12 caracteres con las cuatro clases exigidas tiene una
+probabilidad muy baja de aparecer en una lista de filtraciones, que es
+precisamente lo que la comprobación de pago verifica. No es equivalente —la
+comprobación mira la lista real— pero cubre el mismo riesgo por la vía que el
+plan gratuito sí permite.
+
+**Pendiente del titular, y es una decisión de negocio, no técnica:** si el
+proyecto pasa a datos reales con identidades de personas, contratar el plan Pro
+y activar la comprobación. Mientras los datos sean sintéticos, el riesgo
+residual es bajo.
 
 ### 5.3 Space estático sin cabeceras HTTP
 

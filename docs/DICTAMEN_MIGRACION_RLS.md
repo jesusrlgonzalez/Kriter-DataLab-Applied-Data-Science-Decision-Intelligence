@@ -41,10 +41,11 @@ Ninguna puerta quedó en FAIL.
 | 1 | Las pruebas adversariales no corren en la validación automática. **Desde 2.2.0 son un control bloqueante**: el flujo de publicación falla si no están configuradas, de modo que no puede publicarse una versión con control de acceso sin haber verificado el aislamiento | Guardar el secreto `KRITER_QA_USERS` (el JSON está en el archivo de credenciales de QA) y las variables `SUPABASE_URL` y `SUPABASE_PUBLISHABLE_KEY` | Titular |
 | 2 | La rama `main` no está protegida | GitHub → *Settings → Branches → Add rule*: exigir que la validación pase antes de fusionar | Titular |
 | 3 | GitHub OAuth no está habilitado | Procedimiento en `docs/ADMINISTRACION.md` §Habilitar GitHub | Titular |
-| 4 | Protección de contraseñas filtradas desactivada | Supabase → *Authentication*: activar la comprobación contra HaveIBeenPwned (gratuita) | Titular |
+| 4 | Protección de contraseñas filtradas desactivada. **Corrección de un dato erróneo de versiones anteriores de este dictamen: no es gratuita.** El panel declara que solo está disponible en el plan Pro y superiores, de modo que es incompatible con la restricción de coste cero. Se aplicaron cinco controles compensatorios gratuitos el 13-nov-2026 (longitud mínima 12, cuatro clases de caracteres obligatorias, cambio seguro de contraseña y exigencia de la contraseña actual) | Decisión de negocio: contratar el plan Pro solo si el proyecto pasa a identidades de personas reales. Detalle en `docs/MODELO_SEGURIDAD_RLS.md` §5.2 | Titular |
 | 5 | Las cuentas de QA siguen activas | Eliminarlas o rotar sus contraseñas antes de usar el proyecto con datos no sintéticos | Titular |
 
-Ninguno impide usar la aplicación: los cinco son endurecimiento posterior,
+De los cinco, el cuarto queda cerrado en lo que el plan gratuito permite. Los
+demás son endurecimiento posterior,
 **salvo el primero, que desde la versión 2.2.0 impide publicar la versión con
 control de acceso.**
 

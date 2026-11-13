@@ -100,6 +100,21 @@ Las denegaciones que revierten la transacción no aparecen aquí: están en
 | `HF_TOKEN` | Secretos de GitHub Actions | Cada vez que cambie el alcance del Space |
 | Contraseñas de QA | Fuera del repositorio | Antes de usar datos no sintéticos |
 
+### Política de contraseñas vigente (verificada el 13-nov-2026)
+
+| Ajuste | Valor |
+|---|---|
+| Longitud mínima | 12 caracteres |
+| Composición obligatoria | Minúsculas, mayúsculas, dígitos y símbolos |
+| Cambio de contraseña | Exige sesión reciente (menos de 24 h) |
+| Actualización de contraseña | Exige la contraseña actual |
+| Registros anónimos | Desactivados |
+| Comprobación contra listas de filtraciones | No disponible en el plan gratuito |
+
+**Aviso para altas:** las contraseñas de las identidades creadas antes de esta
+fecha no se revalidan. Si alguna tiene menos de 12 caracteres, sigue siendo
+válida para iniciar sesión; la política solo aplica al crearlas o cambiarlas.
+
 ## Habilitar GitHub como proveedor de acceso
 
 1. Panel de Supabase → **Authentication → Providers → GitHub**: activar y pegar
@@ -163,7 +178,7 @@ publicación **no publica** si las pruebas de aislamiento no pueden ejecutarse.
 
 | Procedimiento | Dónde | Por qué no se automatiza |
 |---|---|---|
-| Activar la protección contra contraseñas filtradas | *Authentication → Policies* | Ajuste del panel, no modificable por SQL |
+| Contratar el plan Pro y activar la protección contra contraseñas filtradas | *Authentication → Providers → Email* | Solo disponible en plan Pro o superior: incompatible con la restricción de coste cero. Controles compensatorios ya aplicados (`docs/MODELO_SEGURIDAD_RLS.md` §5.2) |
 | Activar GitHub como proveedor | *Authentication → Providers* | Requiere el secreto de la OAuth App |
 | Rotar la clave de servicio | *Settings → API* | Credencial privilegiada |
 | Proteger la rama `main` | GitHub → *Settings → Branches* | Requiere permisos de administración del repositorio |
