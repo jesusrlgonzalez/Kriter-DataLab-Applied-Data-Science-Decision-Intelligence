@@ -1,4 +1,7 @@
 /* Kriter DataLab - estilos de la capa autenticada (se anaden a styles.css) */
+/* El CSS base fija display en botones y paneles; sin esto, el atributo hidden
+   no oculta los elementos que dependen del permiso del perfil. */
+[hidden]{display:none !important}
 .session-box{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .session-id{display:flex;flex-direction:column;line-height:1.25;max-width:230px}
 .session-id strong{font-size:13px;color:#0f3442;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
