@@ -44,7 +44,23 @@ Ninguna puerta quedó en FAIL.
 | 4 | Protección de contraseñas filtradas desactivada | Supabase → *Authentication*: activar la comprobación contra HaveIBeenPwned (gratuita) | Titular |
 | 5 | Las cuentas de QA siguen activas | Eliminarlas o rotar sus contraseñas antes de usar el proyecto con datos no sintéticos | Titular |
 
-Ninguno impide usar la aplicación: los cinco son endurecimiento posterior.
+Ninguno impide usar la aplicación: los cinco son endurecimiento posterior,
+**salvo el primero, que desde la versión 2.2.0 impide publicar la versión con
+control de acceso.**
+
+**Comprobación del control bloqueante (13-nov-2026).** Se despachó el flujo de
+publicación de la versión candidata con el repositorio en su estado real, sin el
+secreto de QA. Resultado registrado en la ejecución `43487353944`:
+
+| Trabajo | Paso | Resultado |
+|---|---|---|
+| validar / test | 12 pasos de validación, compilación, escáner de credenciales, reproducibilidad y manifiesto | **success** |
+| deploy | *Pruebas adversariales de autorización (obligatorias)* | **failure** |
+| deploy | *Verificar credenciales y destino* · *hub-sync* · *Resumen* | **skipped** |
+
+Es decir: **la sincronización con el Space no se ejecutó**. El control hace lo
+que dice hacer. Al configurar el secreto, el mismo despacho publicará y dejará
+el archivo de evidencia como artefacto de la ejecución durante 90 días.
 
 **Estado comprobado el 13-nov-2026** (solo lectura sobre GitHub y Supabase):
 los cinco siguen pendientes. Sí están configurados `HF_CANDIDATE_SPACE_ID` y

@@ -44,9 +44,13 @@ jobs:
         run: python tools/verify_release.py
 
       # --- Pruebas adversariales reales (solo si existen credenciales de QA) ---
+      # En esta validacion son informativas: registran BLOCKED si faltan las
+      # credenciales, para no detener la publicacion de la version estatica
+      # publica, que no depende de Supabase. En el flujo de publicacion de la
+      # version con control de acceso son BLOQUEANTES.
       # El contexto secrets no puede usarse en una condicion if: se comprueba
       # dentro del paso y, si falta, el control queda registrado como BLOCKED.
-      - name: Pruebas adversariales de autorización
+      - name: Pruebas adversariales de autorización (informativas en esta validación)
         env:
           SUPABASE_URL: ${{ vars.SUPABASE_URL }}
           SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
