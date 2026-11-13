@@ -1,5 +1,24 @@
 # Cambios
 
+## 2.1.0 — 2026-11-13
+
+- Corrige la exportacion CSV, que la API truncaba en silencio a 1,000 filas: la funcion devuelve ahora un unico valor JSON y la suma vuelve a cuadrar con el indicador del tablero.
+- Una sola recarga por cambio de sesion: el tablero ya no parpadea en blanco al iniciar o cerrar sesion.
+- Mensaje claro cuando el servidor cancela una consulta por tiempo de ejecucion, con opcion de reintento.
+- Caso RLS-21: comprueba que la exportacion completa no se trunca (21 casos adversariales en total).
+- Verificacion sobre la URL publicada del Space candidato.
+
+## 2.0.0 — 2026-11-13
+
+- Nueva version candidata con **autenticacion, roles y Row Level Security** sobre PostgreSQL (Supabase, plan gratuito), sin Docker ni FastAPI.
+- Modelo relacional de ocho tablas con denegacion por defecto y sin ninguna ruta de escritura accesible desde el navegador.
+- Cuatro perfiles (administrador, gerente regional, analista y auditor) con alcance por area y capacidades diferenciadas de exportacion, simulacion y auditoria.
+- API analitica en PL/pgSQL que agrega dentro de la base respetando RLS; busqueda, orden y paginacion en el servidor.
+- Aplicacion estatica sin datos comerciales incrustados: de 674 KB a 287 KB.
+- Banco de pruebas adversariales con identidades independientes y banco de aislamiento en SQL.
+- Publicacion manual hacia un Space distinto del de produccion, con salvaguarda que impide sobrescribirlo.
+- La aplicacion publica original se mantiene intacta.
+
 ## 1.2.1 — 2026-11-12
 
 - Publicación en Hugging Face Spaces verificada sobre la URL pública.

@@ -46,6 +46,12 @@ Ninguna puerta quedó en FAIL.
 
 Ninguno impide usar la aplicación: los cinco son endurecimiento posterior.
 
+**Estado comprobado el 13-nov-2026** (solo lectura sobre GitHub y Supabase):
+los cinco siguen pendientes. Sí están configurados `HF_CANDIDATE_SPACE_ID` y
+`HF_TOKEN`, como demuestran las publicaciones en verde. La validación automática
+registra explícitamente `BLOCKED: faltan las variables de QA`, de modo que la
+ausencia queda documentada en cada ejecución en lugar de pasar inadvertida.
+
 ## 4. Defectos encontrados y corregidos durante el desarrollo
 
 | # | Defecto (cómo se detectó) | Gravedad | Corrección |
@@ -61,6 +67,7 @@ Ninguno impide usar la aplicación: los cinco son endurecimiento posterior.
 | 9 | **La exportación CSV se truncaba en silencio a 1,000 filas** y su suma no cuadraba con el indicador del tablero: PostgREST aplica un límite de filas a las funciones que devuelven conjuntos. El auditor descargaba 1,000 de 1,050 filas creyendo tenerlas todas. Detectado al exportar desde la interfaz publicada y comparar la suma con el KPI. | **Alta** | Migración 12: la función devuelve un único valor `jsonb`, que no se trunca. Caso RLS-21 añadido para detectarlo en el futuro |
 | 10 | Al iniciar sesión se lanzaban dos recargas (la llamada explícita y el evento de Supabase) y el tablero parpadeaba en blanco medio segundo. Detectado con una traza temporal sobre la URL publicada. | Media | Cada recarga lleva un motivo; dos peticiones con el mismo motivo se atienden una sola vez |
 | 11 | Un tiempo de ejecución agotado mostraba el mensaje crudo de PostgreSQL (`canceling statement due to statement timeout`). Observado al saturar el proyecto con ráfagas de prueba. | Baja | Mensaje en español con sugerencia de reintento o de acotar el periodo |
+| 12 | Quedó en la base una función auxiliar de medición de tiempos creada durante el diagnóstico. | Baja | Migración 13: eliminada; el analizador de Supabase ya no la reporta |
 
 ## 5. Resultados de aislamiento medidos
 
