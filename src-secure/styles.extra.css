@@ -1,0 +1,22 @@
+/* Kriter DataLab - estilos de la capa autenticada (se anaden a styles.css) */
+.session-box{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.session-id{display:flex;flex-direction:column;line-height:1.25;max-width:230px}
+.session-id strong{font-size:13px;color:#0f3442;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.session-id small{font-size:11px;color:#5d7c8d;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tag-ok{background:#e6f5ec;color:#1d6b40;border-color:#bfe3cd}
+.status-loading{color:#5d7c8d}
+.status-error{color:#9a2b2b;font-weight:600}
+.pager{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;flex-wrap:wrap}
+.pager .button:disabled{opacity:.45;cursor:not-allowed}
+#exportBtn:disabled{opacity:.5;cursor:not-allowed}
+.dialog-backdrop{position:fixed;inset:0;background:rgba(10,28,40,.55);display:flex;align-items:center;justify-content:center;padding:18px;z-index:60}
+.dialog-backdrop[hidden]{display:none}
+.dialog{background:#fff;border-radius:14px;max-width:420px;width:100%;padding:26px;box-shadow:0 24px 60px rgba(10,28,40,.35)}
+.dialog h3{margin:0 0 6px;font-size:19px;color:#0f3442}
+.dialog .desc{font-size:13px;color:#5d7c8d;margin:0 0 18px}
+.dialog label{display:block;font-size:12px;font-weight:600;color:#0f3442;margin:12px 0 5px}
+.dialog input{width:100%;padding:10px 12px;border:1px solid #cfdbe3;border-radius:9px;font:inherit;font-size:14px;box-sizing:border-box}
+.dialog input:focus-visible{outline:3px solid #20a5bc;outline-offset:-1px}
+.dialog-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.dialog .warning{margin:14px 0 0;font-size:13px}
+@media(max-width:760px){.session-id{max-width:150px}.top-actions{gap:8px}}
