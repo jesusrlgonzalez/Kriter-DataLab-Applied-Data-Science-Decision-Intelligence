@@ -2,8 +2,8 @@
 /* El CSS base fija display en botones y paneles; sin esto, el atributo hidden
    no oculta los elementos que dependen del permiso del perfil. */
 [hidden]{display:none !important}
-.session-box{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.session-id{display:flex;flex-direction:column;line-height:1.25;max-width:230px}
+.session-box{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0}
+.session-id{display:flex;flex-direction:column;line-height:1.25;max-width:230px;min-width:0}
 .session-id strong{font-size:13px;color:#0f3442;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .session-id small{font-size:11px;color:#5d7c8d;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tag-ok{background:#e6f5ec;color:#1d6b40;border-color:#bfe3cd}
@@ -22,4 +22,12 @@
 .dialog input:focus-visible{outline:3px solid #20a5bc;outline-offset:-1px}
 .dialog-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
 .dialog .warning{margin:14px 0 0;font-size:13px}
-@media(max-width:760px){.session-id{max-width:150px}.top-actions{gap:8px}}
+@media(max-width:760px){.session-id{max-width:150px}.top-actions{gap:8px;flex-wrap:wrap}}
+/* En pantallas estrechas la barra de sesion no debe ensanchar la pagina. */
+@media(max-width:460px){
+  .top-actions{width:100%;flex-wrap:wrap;gap:8px}
+  .session-box{flex:1 1 100%;justify-content:space-between}
+  .session-id{max-width:none;flex:1 1 auto}
+  .session-id strong,.session-id small{white-space:normal;overflow-wrap:anywhere}
+  #exportBtn{flex:1 1 100%;justify-content:center}
+}
