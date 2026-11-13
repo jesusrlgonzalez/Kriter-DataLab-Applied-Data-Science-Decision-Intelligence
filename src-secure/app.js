@@ -54,9 +54,15 @@
     if (!error) return 'Error desconocido.';
     if (error.code === '42501') return error.message || 'La consulta solicitada no esta autorizada para tu perfil.';
     if (error.code === '22007') return 'El periodo solicitado esta invertido: la semana inicial es posterior a la final.';
-    if (error.status === 401 || error.code === 'PGRST301') return 'Tu sesion caduco. Vuelve a iniciar sesion para continuar.';
+    if (expirada(error)) return 'Tu sesion caduco. Vuelve a iniciar sesion para continuar.';
     if (error.message && /fetch|network|Failed to fetch/i.test(error.message)) return 'No se pudo contactar al servidor de datos. Revisa tu conexion e intenta de nuevo.';
     return error.message || 'No fue posible completar la consulta.';
+  }
+
+  /* Un 401 con codigo 42501 es una denegacion a una sesion anonima, no una
+     sesion caducada: no debe cerrar sesion ni pedir volver a entrar. */
+  function expirada(error) {
+    return error.code === 'PGRST301' || (error.status === 401 && error.code !== '42501');
   }
 
   function report(event, detail) {
@@ -68,7 +74,7 @@
     if (res.error) {
       var err = res.error;
       if (err.code === '42501') report('acceso_denegado', { funcion: fn, area: (args || {}).p_region || null });
-      if (err.status === 401 || err.code === 'PGRST301') { report('sesion_expirada', { funcion: fn }); await sb.auth.signOut().catch(function () {}); }
+      if (expirada(err)) { report('sesion_expirada', { funcion: fn }); await sb.auth.signOut().catch(function () {}); }
       throw err;
     }
     return res.data;
