@@ -27,7 +27,7 @@ ningún servicio de pago.
 | **G2 · Seguridad** | PASS | 20/20 casos adversariales con cinco identidades independientes (`evidence-secure/pruebas_adversariales.json`) |
 | **G3 · Producto** | PASS | Las cinco páginas, filtros, orden, búsqueda, paginación, exportación y escenarios operan por perfil; móvil 375 px sin desbordamiento |
 | **G4 · Reproducción** | PASS | GitHub Actions reconstruye datos y ambos artefactos y compara con lo versionado (`git diff --exit-code`) |
-| **G5 · Despliegue** | PASS en GitHub · **BLOCKED** en Hugging Face | Ejecución 43413078913 en verde; falta el Space candidato y un token con alcance sobre él |
+| **G5 · Despliegue** | PASS en GitHub · **BLOCKED** en Hugging Face | Ejecución 43413812626 en verde; falta el Space candidato y un token con alcance sobre él |
 | **G6 · Entrega** | PASS | Código, SQL, pruebas, documentación, evidencias, manifiesto y paquetes |
 
 Ninguna puerta quedó en FAIL.
