@@ -452,7 +452,9 @@
   async function exportCSV() {
     try {
       $('exportBtn').disabled = true;
+      /* La funcion devuelve un unico jsonb: asi la API no trunca la exportacion. */
       var rows = await rpc('kriter_export_products', filterArgs());
+      if (!Array.isArray(rows)) rows = [];
       var head = ['AREA', 'ITEM_CODE', 'PRODUCTO', 'MARCA', 'SEGMENTO', 'VENTAS_VALOR', 'VENTAS_UNIDADES', 'REGISTROS'];
       var csv = [head.join(',')];
       (rows || []).forEach(function (r) {

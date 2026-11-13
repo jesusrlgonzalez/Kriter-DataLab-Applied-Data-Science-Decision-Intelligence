@@ -100,6 +100,12 @@ const CASOS = [
       const e = await llamar(tokens.regional, '/rest/v1/rpc/kriter_export_products', { method: 'POST', body: {} });
       const suma = (e.body || []).reduce((t, x) => t + Number(x.valor), 0);
       return Math.abs(suma - Number(d.body.kpi.sales)) < 0.01; }],
+  ['RLS-21', 'La exportacion completa no se trunca por el limite de filas de la API',
+    async () => { const d = await llamar(tokens.administrador, '/rest/v1/rpc/kriter_dashboard', { method: 'POST', body: {} });
+      const e = await llamar(tokens.administrador, '/rest/v1/rpc/kriter_export_products', { method: 'POST', body: {} });
+      const filas = Array.isArray(e.body) ? e.body.length : -1;
+      const suma = (e.body || []).reduce((t, x) => t + Number(x.valor), 0);
+      return filas > 1000 && Math.abs(suma - Number(d.body.kpi.sales)) < 0.01; }],
   ['RLS-20', 'Un periodo invertido se rechaza con un error explicito',
     async () => { const r = await llamar(tokens.administrador, '/rest/v1/rpc/kriter_dashboard', { method: 'POST', body: { p_from: '2025-01-01', p_to: '2024-01-01' } });
       return r.status === 400 && r.body.code === '22007'; }]
