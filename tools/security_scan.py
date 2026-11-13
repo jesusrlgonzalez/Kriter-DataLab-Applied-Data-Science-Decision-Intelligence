@@ -61,19 +61,33 @@ def revisar(ruta: Path) -> list[str]:
 def main(argv: list[str]) -> int:
     objetivos = [Path(a) for a in argv[1:]] or [ROOT / "site-secure"]
     archivos: list[Path] = []
+    ausentes: list[str] = []
     for objetivo in objetivos:
-        objetivo = objetivo if objetivo.is_absolute() else ROOT / objetivo
-        if objetivo.is_dir():
-            archivos += [p for p in objetivo.rglob("*") if p.is_file()]
-        elif objetivo.is_file():
-            archivos.append(objetivo)
+        candidatas = [objetivo] if objetivo.is_absolute() else [Path.cwd() / objetivo, ROOT / objetivo]
+        ruta = next((c for c in candidatas if c.exists()), None)
+        if ruta is None:
+            ausentes.append(str(objetivo))
+            continue
+        if ruta.is_dir():
+            archivos += [p for p in ruta.rglob("*") if p.is_file()]
+        else:
+            archivos.append(ruta)
+    # Un analisis que no revisa nada nunca debe considerarse conforme.
+    if ausentes or not archivos:
+        print(json.dumps({"estado": "FALLA", "motivo": "no hay nada que revisar",
+                          "rutas_inexistentes": ausentes}, ensure_ascii=False))
+        return 1
     problemas: dict[str, list[str]] = {}
     for archivo in sorted(archivos):
         if archivo.suffix in {".png", ".jpg", ".zip", ".ico"}:
             continue
         hallazgos = revisar(archivo)
         if hallazgos:
-            problemas[archivo.relative_to(ROOT).as_posix()] = hallazgos
+            try:
+                nombre = archivo.relative_to(ROOT).as_posix()
+            except ValueError:
+                nombre = archivo.as_posix()
+            problemas[nombre] = hallazgos
     if problemas:
         print(json.dumps({"estado": "FALLA", "hallazgos": problemas}, indent=2, ensure_ascii=False))
         return 1

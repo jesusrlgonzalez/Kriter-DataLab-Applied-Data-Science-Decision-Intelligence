@@ -55,6 +55,13 @@ class ArtefactoSeguro(unittest.TestCase):
                            capture_output=True, text=True)
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
 
+    def test_el_analisis_falla_si_no_revisa_nada(self):
+        """Un escaner que no encuentra el objetivo no debe reportar conformidad."""
+        r = subprocess.run([sys.executable, str(ROOT / "tools" / "security_scan.py"), "ruta_inexistente"],
+                           capture_output=True, text=True)
+        self.assertEqual(r.returncode, 1, r.stdout)
+        self.assertIn("FALLA", r.stdout)
+
     def test_sin_dependencias_de_fastapi_ni_docker(self):
         for prohibido in ["Dockerfile", "requirements.txt"]:
             self.assertFalse((ROOT / "site-secure" / prohibido).exists())
