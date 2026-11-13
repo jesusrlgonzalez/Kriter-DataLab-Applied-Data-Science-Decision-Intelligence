@@ -1,11 +1,11 @@
 # Plan de reversión
 
-La versión pública actual **no se ha sustituido**. Convive con la candidata:
+La versión pública original **no se ha sustituido**. Convive con la candidata, ya publicada en su propio Space:
 
 | Entorno | Contenido | Space | Flujo que lo publica |
 |---|---|---|---|
 | Producción | `site/` · aplicación estática con los datos incrustados | `JesusRLGonzalez/kriter-datalab` | `deploy-huggingface.yml` (push a `main`) |
-| Candidata | `site-secure/` · Supabase, autenticación y RLS | Space nuevo, definido en `HF_CANDIDATE_SPACE_ID` | `deploy-candidate-hf.yml` (solo manual) |
+| Candidata | `site-secure/` · Supabase, autenticación y RLS | `JesusRLGonzalez/kriter-datalab-rls` | `deploy-candidate-hf.yml` (solo manual) |
 
 El flujo de la candidata **falla si el Space de destino es el de producción**.
 

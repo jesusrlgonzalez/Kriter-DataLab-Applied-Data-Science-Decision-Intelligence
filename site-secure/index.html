@@ -284,6 +284,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
     if (!error) return 'Error desconocido.';
     if (error.code === '42501') return error.message || 'La consulta solicitada no esta autorizada para tu perfil.';
     if (error.code === '22007') return 'El periodo solicitado esta invertido: la semana inicial es posterior a la final.';
+    if (error.code === '57014') return 'El servidor tardo demasiado en responder y cancelo la consulta. Vuelve a intentarlo; si se repite, reduce el periodo o filtra por un area.';
     if (expirada(error)) return 'Tu sesion caduco. Vuelve a iniciar sesion para continuar.';
     if (error.message && /fetch|network|Failed to fetch/i.test(error.message)) return 'No se pudo contactar al servidor de datos. Revisa tu conexion e intenta de nuevo.';
     return error.message || 'No fue posible completar la consulta.';

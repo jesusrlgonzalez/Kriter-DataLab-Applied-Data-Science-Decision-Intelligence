@@ -1,10 +1,10 @@
 {
-  "descripcion": "Casos adversariales ejecutados con tests/adversarial_http.mjs contra el proyecto Supabase real, con cinco identidades independientes, desde un navegador de escritorio.",
+  "descripcion": "Casos adversariales ejecutados con tests/adversarial_http.mjs contra el proyecto Supabase real, con cinco identidades independientes, desde la aplicacion publicada en Hugging Face Spaces.",
   "fecha": "2026-11-13",
+  "origen_navegador": "https://jesusrlgonzalez-kriter-datalab-rls.static.hf.space",
   "proyecto": "https://nnutikucpezhnnkawczp.supabase.co",
-  "commit_script": "af9d8049c0b9fe1bf674d31c2bcbf294502d368d",
-  "total": 20,
-  "pass": 20,
+  "total": 21,
+  "pass": 21,
   "fail": 0,
   "casos": [
     {
@@ -105,6 +105,11 @@
     {
       "id": "RLS-20",
       "descripcion": "Un periodo invertido se rechaza con un error explicito",
+      "estado": "PASS"
+    },
+    {
+      "id": "RLS-21",
+      "descripcion": "La exportacion completa no se trunca por el limite de filas de la API",
       "estado": "PASS"
     }
   ]

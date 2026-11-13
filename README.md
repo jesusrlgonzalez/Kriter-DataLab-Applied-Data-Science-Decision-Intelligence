@@ -10,7 +10,7 @@ El repositorio contiene **dos versiones del mismo producto**:
 | Versión | Carpeta | Qué hace | Estado |
 |---|---|---|---|
 | **Pública** | `site/` | Tablero estático; los datos viajan incrustados en el HTML | Publicada y verificada |
-| **Candidata con control de acceso** | `site-secure/` | Mismo tablero contra PostgreSQL (Supabase) con autenticación, roles y **Row Level Security** | Validada; pendiente de publicar en un Space aparte |
+| **Candidata con control de acceso** | `site-secure/` | Mismo tablero contra PostgreSQL (Supabase) con autenticación, roles y **Row Level Security** | [Publicada y verificada](https://huggingface.co/spaces/JesusRLGonzalez/kriter-datalab-rls) |
 
 La versión pública **no se sustituye** hasta autorizar expresamente el cambio.
 
@@ -96,4 +96,4 @@ Lee **[la guía de publicación sin terminal](docs/RUTA_SIN_TERMINAL.md)** o **[
 
 - **Publicado:** [Space en Hugging Face](https://huggingface.co/spaces/JesusRLGonzalez/kriter-datalab) · [pantalla completa](https://jesusrlgonzalez-kriter-datalab.static.hf.space/index.html). Verificado el 12-nov-2026 sobre la URL pública.
 - **Publicación automática:** cada push a `main` valida y sincroniza `site/` con el Space.
-- **Candidata con RLS:** validada sobre el proyecto Supabase `kriter-analytics` (20/20 casos adversariales en verde). Su publicación es **manual** y exige un Space distinto del de producción.
+- **Candidata con RLS:** [Space publicado](https://huggingface.co/spaces/JesusRLGonzalez/kriter-datalab-rls) · [pantalla completa](https://jesusrlgonzalez-kriter-datalab-rls.static.hf.space/index.html). Verificada el 13-nov-2026 sobre su URL real: 21/21 casos adversariales en verde. Su publicación es **manual** y exige un Space distinto del de producción.

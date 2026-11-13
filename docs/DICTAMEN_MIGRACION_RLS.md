@@ -2,18 +2,20 @@
 
 **Fecha:** 13-nov-2026 · **Responsable:** Jesus R.L. Gonzalez · **Marca:** Kriter Systems
 **Repositorio:** https://github.com/jesusrlgonzalez/Kriter-DataLab-Applied-Data-Science-Decision-Intelligence
-**Rama de desarrollo:** `feature/supabase-rls` · **Proyecto Supabase:** `kriter-analytics` (plan Free)
+**Proyecto Supabase:** `kriter-analytics` (plan Free)
+**Space candidato publicado:** https://huggingface.co/spaces/JesusRLGonzalez/kriter-datalab-rls
+**Aplicación:** https://jesusrlgonzalez-kriter-datalab-rls.static.hf.space/index.html
 
 ## 1. Conclusión
 
-La nueva arquitectura **está construida, cargada y verificada con identidades
-reales**: autenticación, roles, áreas y seguridad a nivel de filas funcionan y
-resisten peticiones manipuladas. Las 20 pruebas adversariales pasan y la
-integración continua queda en verde.
+La nueva arquitectura está **publicada y verificada sobre su URL real**:
+autenticación, roles, áreas y seguridad a nivel de filas funcionan y resisten
+peticiones manipuladas. Las 21 pruebas adversariales pasan desde el navegador
+contra el Space publicado, y la integración continua queda en verde.
 
-**La aplicación pública no se ha tocado.** Sigue publicada y sirviéndose desde
-`site/`; la versión con control de acceso vive en `site-secure/` y su publicación
-es manual y hacia un Space distinto.
+**La aplicación pública original no se ha tocado.** Sigue sirviéndose desde
+`site/` en `kriter-datalab`; la versión con control de acceso vive en
+`site-secure/` y se publica, solo a mano, en `kriter-datalab-rls`.
 
 Coste mensual: **0 USD**. No se contrató Hugging Face PRO, Supabase PRO ni
 ningún servicio de pago.
@@ -24,28 +26,25 @@ ningún servicio de pago.
 |---|---|---|
 | **G0 · Auditoría** | PASS | Paquete FastAPI y repositorio publicado inventariados; matriz de migración en `docs/ARQUITECTURA_SUPABASE.md` §2 |
 | **G1 · Datos** | PASS | 20,160 filas, 350 productos, 6 áreas, 80 semanas; suma 48,820,590.6720 idéntica a la aplicación publicada |
-| **G2 · Seguridad** | PASS | 20/20 casos adversariales con cinco identidades independientes (`evidence-secure/pruebas_adversariales.json`) |
-| **G3 · Producto** | PASS | Las cinco páginas, filtros, orden, búsqueda, paginación, exportación y escenarios operan por perfil; móvil 375 px sin desbordamiento |
+| **G2 · Seguridad** | PASS | 21/21 casos adversariales con cinco identidades independientes, ejecutados desde el Space publicado (`evidence-secure/pruebas_adversariales.json`) |
+| **G3 · Producto** | PASS | Las seis páginas, filtros, orden, búsqueda, paginación, exportación y escenarios operan por perfil sobre la URL pública; móvil 375 px sin desbordamiento |
 | **G4 · Reproducción** | PASS | GitHub Actions reconstruye datos y ambos artefactos y compara con lo versionado (`git diff --exit-code`) |
-| **G5 · Despliegue** | PASS en GitHub · **BLOCKED** en Hugging Face | Ejecución 43413812626 en verde; falta el Space candidato y un token con alcance sobre él |
+| **G5 · Despliegue** | PASS | Flujo manual `deploy-candidate-hf.yml` en verde (ejecución 43419907739) y Space candidato sirviendo la aplicación |
 | **G6 · Entrega** | PASS | Código, SQL, pruebas, documentación, evidencias, manifiesto y paquetes |
 
 Ninguna puerta quedó en FAIL.
 
-## 3. Qué está bloqueado y qué hace falta exactamente
+## 3. Qué queda pendiente
 
-| # | Bloqueo | Acción necesaria | Quién |
+| # | Pendiente | Acción | Quién |
 |---|---|---|---|
-| 1 | No existe el Space candidato | Crear un Space *Static* nuevo, por ejemplo `JesusRLGonzalez/kriter-datalab-rls`. **No reutilizar el de producción.** | Titular |
-| 2 | El token actual solo alcanza al Space de producción | Crear un token *fine-grained* con escritura sobre el Space candidato y guardarlo como secreto `HF_TOKEN` (o ampliar el existente) | Titular |
-| 3 | Falta la variable `HF_CANDIDATE_SPACE_ID` | GitHub → *Settings → Variables → Actions*: `HF_CANDIDATE_SPACE_ID` = `JesusRLGonzalez/kriter-datalab-rls` | Titular |
-| 4 | Las pruebas adversariales no corren en CI | Guardar el secreto `KRITER_QA_USERS` (JSON con los correos y contraseñas de QA) y las variables `SUPABASE_URL` y `SUPABASE_PUBLISHABLE_KEY` | Titular |
-| 5 | La rama `main` no está protegida | GitHub → *Settings → Branches → Add rule*: exigir revisión y que la validación pase antes de fusionar | Titular |
-| 6 | GitHub OAuth no está habilitado | Procedimiento en `docs/ADMINISTRACION.md` §Habilitar GitHub | Titular |
-| 7 | Protección de contraseñas filtradas desactivada | Supabase → *Authentication → Policies*: activar la comprobación contra HaveIBeenPwned (gratuita) | Titular |
+| 1 | Las pruebas adversariales no corren en la validación automática | Guardar el secreto `KRITER_QA_USERS` (el JSON está en el archivo de credenciales de QA) y las variables `SUPABASE_URL` y `SUPABASE_PUBLISHABLE_KEY` | Titular |
+| 2 | La rama `main` no está protegida | GitHub → *Settings → Branches → Add rule*: exigir que la validación pase antes de fusionar | Titular |
+| 3 | GitHub OAuth no está habilitado | Procedimiento en `docs/ADMINISTRACION.md` §Habilitar GitHub | Titular |
+| 4 | Protección de contraseñas filtradas desactivada | Supabase → *Authentication*: activar la comprobación contra HaveIBeenPwned (gratuita) | Titular |
+| 5 | Las cuentas de QA siguen activas | Eliminarlas o rotar sus contraseñas antes de usar el proyecto con datos no sintéticos | Titular |
 
-Mientras 1–3 no se resuelvan, el flujo `deploy-candidate-hf.yml` omite la
-publicación: **no falla ni publica nada**.
+Ninguno impide usar la aplicación: los cinco son endurecimiento posterior.
 
 ## 4. Defectos encontrados y corregidos durante el desarrollo
 
@@ -59,6 +58,9 @@ publicación: **no falla ni publica nada**.
 | 6 | `search_path` mutable en 8 funciones. Detectado por el analizador de seguridad de Supabase. | Baja | Migración 11: `set search_path = ''` en todas |
 | 7 | El flujo de CI no se podía despachar: el contexto `secrets` no es válido en una condición `if`. Detectado al lanzarlo. | Baja | La comprobación se hace dentro del paso y registra BLOCKED si faltan credenciales |
 | 8 | El primer escáner de credenciales daba un falso positivo con el propio cliente de Supabase (contiene la cadena `sb_secret_` en su detector de formatos). | Baja | El escáner busca valores reales: claves con cuerpo, JWT con rol privilegiado y claves PEM |
+| 9 | **La exportación CSV se truncaba en silencio a 1,000 filas** y su suma no cuadraba con el indicador del tablero: PostgREST aplica un límite de filas a las funciones que devuelven conjuntos. El auditor descargaba 1,000 de 1,050 filas creyendo tenerlas todas. Detectado al exportar desde la interfaz publicada y comparar la suma con el KPI. | **Alta** | Migración 12: la función devuelve un único valor `jsonb`, que no se trunca. Caso RLS-21 añadido para detectarlo en el futuro |
+| 10 | Al iniciar sesión se lanzaban dos recargas (la llamada explícita y el evento de Supabase) y el tablero parpadeaba en blanco medio segundo. Detectado con una traza temporal sobre la URL publicada. | Media | Cada recarga lleva un motivo; dos peticiones con el mismo motivo se atienden una sola vez |
+| 11 | Un tiempo de ejecución agotado mostraba el mensaje crudo de PostgreSQL (`canceling statement due to statement timeout`). Observado al saturar el proyecto con ráfagas de prueba. | Baja | Mensaje en español con sugerencia de reintento o de acotar el periodo |
 
 ## 5. Resultados de aislamiento medidos
 
@@ -76,7 +78,9 @@ proyecto real:
 
 En todos los perfiles, consultar directamente una tabla filtrando por el
 identificador de un área ajena devuelve **0 filas**, y la exportación suma
-exactamente lo mismo que el indicador del tablero del mismo perfil.
+exactamente lo mismo que el indicador del tablero del mismo perfil: comprobado
+descargando el CSV desde la aplicación publicada (auditor: 1,050 filas y
+22,819,019.3933; administrador: 2,100 filas y 48,820,590.6720).
 
 El total del administrador (48,820,590.67) y el escenario base
 (2,790,608.19) coinciden al céntimo con la aplicación pública actual: la
@@ -100,23 +104,21 @@ migración no alteró ninguna cifra.
 
 - Pruebas en un navegador de motor Chromium, con móvil emulado a 375 px. No se
   probó en Firefox, Safari ni en un teléfono físico.
-- La candidata se ejecutó desde el origen del propio proyecto Supabase para
-  poder probarla sin publicar nada. **No se ha servido todavía desde un Space**:
-  esa comprobación queda pendiente del desbloqueo 1–3.
+- Rendimiento medido en el servidor: el tablero del administrador tarda 200 ms
+  y la exportación completa 135 ms. El plan gratuito aplica un límite de 8
+  segundos por consulta; bajo ráfagas de prueba intensas se alcanzó ese límite y
+  la aplicación lo informa con un mensaje claro y opción de reintento.
 - Accesibilidad revisada a nivel básico (etiquetas, foco, teclado, idioma); no
   es una auditoría WCAG completa.
-- `huggingface/hub-sync` con `subdirectory: site-secure` no se ha ejecutado
-  nunca; su configuración se revisó contra la del flujo de producción, que sí
-  funciona.
 - **Esto no es el RLS nativo de Microsoft Power BI**: es Row Level Security de
   PostgreSQL a través de Supabase.
 
 ## 8. Plan de 3 pasos
 
-1. **Desbloquear la publicación (tú, ~15 min):** puntos 1 a 3 de la sección 3 y
-   ejecutar *Publicar la versión candidata* escribiendo `PUBLICAR`.
-2. **Verificar sobre la URL real (yo):** inicio de sesión de los cuatro perfiles,
-   aislamiento, exportación y vista móvil sobre el Space candidato; cierre de G5.
-3. **Decidir la sustitución:** si la candidata convence, autorizar expresamente
-   el cambio del Space principal; si no, conservarla como evidencia técnica. El
-   plan de reversión está en `docs/REVERSION.md`.
+1. **Usarla (tú, esta semana):** entra con los cuatro perfiles de prueba y
+   comprueba que el alcance de cada uno es el que esperas para tu caso de uso.
+2. **Endurecer (30 min):** los cinco pendientes de la sección 3, empezando por
+   el secreto de QA y la protección de la rama `main`.
+3. **Decidir:** mantener las dos versiones (una demo abierta y otra con control
+   de acceso) o sustituir la pública. El plan de reversión está en
+   `docs/REVERSION.md`.
