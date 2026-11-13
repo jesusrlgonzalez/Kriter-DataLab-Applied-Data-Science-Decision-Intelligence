@@ -26,8 +26,28 @@
   var state = {
     ctx: null, data: null, weeks: [], options: null, sort: 'valor', search: '', offset: 0,
     filters: { region: '', year: '', segment: '', brand: '', from: '', to: '' },
-    loading: false, lastError: null
+    loading: false, lastError: null, seq: 0
   };
+
+  /* Cada carga lleva un numero de secuencia: una respuesta que llega tarde
+     (por ejemplo tras cambiar de usuario) se descarta en lugar de pintarse. */
+  function vigente(n) { return n === state.seq; }
+
+  function limpiarVista() {
+    ['kSales', 'kUnits', 'kProducts', 'kAverage'].forEach(function (id) { $(id).textContent = '—'; });
+    ['chartSegments', 'chartAreas', 'chartBrands', 'segmentDetail', 'areaCards', 'heatmap',
+     'scenarioBars', 'logRows', 'productRows', 'auditRows'].forEach(function (id) { $(id).innerHTML = ''; });
+    $('chartWeekly').innerHTML = '';
+    ['scenarioLow', 'scenarioBase', 'scenarioHigh'].forEach(function (id) { $(id).textContent = '—'; });
+    ['scenarioLowDetail', 'scenarioBaseDetail', 'scenarioHighDetail'].forEach(function (id) { $(id).textContent = '—'; });
+    $('scenarioNote').innerHTML = '';
+    $('insightNarrative').innerHTML = '';
+    ['insightSegment', 'insightRegion', 'insightBrand'].forEach(function (id) { $(id).textContent = '—'; });
+    $('tableCount').textContent = '—';
+    $('pageInfo').textContent = '—';
+    $('weeksLabel').textContent = '—';
+    state.data = null;
+  }
 
   /* ------------------------------------------------------------------ red */
   function readable(error) {
@@ -250,14 +270,16 @@
     $('heatmap').innerHTML = '<table class="heat" aria-label="Mapa de calor del valor de ventas por area y mes">' + head + body + '</table>';
   }
 
-  async function renderScenario() {
+  async function renderScenario(n) {
     if (!state.ctx || !state.ctx.can_view_scenarios) return;
+    if (n === undefined) n = state.seq;
     var w = Number($('scenarioWindow').value), h = Number($('scenarioHorizon').value), p = Number($('scenarioPct').value) / 100;
     $('scenarioPctLabel').textContent = '±' + integer(100 * p) + ' %';
     var args = filterArgs();
     args.p_window = w; args.p_horizon = h; args.p_pct = p;
     try {
       var s = await rpc('kriter_scenario', args);
+      if (!vigente(n)) return;
       $('scenarioLow').textContent = money(s.low);
       $('scenarioBase').textContent = money(s.base);
       $('scenarioHigh').textContent = money(s.high);
@@ -275,6 +297,7 @@
         '). Promedio semanal de ' + money(s.weekly_average) + ', multiplicado por un horizonte hipotetico de ' + integer(s.horizon) +
         ' semanas. El calculo se ejecuta en PostgreSQL sobre las filas que tu perfil puede consultar y NO incorpora estacionalidad, incertidumbre ni informacion posterior a la ultima semana autorizada.';
     } catch (err) {
+      if (!vigente(n)) return;
       $('scenarioNote').innerHTML = '<strong>Denegado.</strong> ' + esc(readable(err));
     }
   }
@@ -301,9 +324,11 @@
     $('auditRows').innerHTML = rows.map(function (r) { return '<tr><td>' + esc(r[0]) + '</td><td>' + r[1] + '</td></tr>'; }).join('');
   }
 
-  async function renderSecurityLog() {
+  async function renderSecurityLog(n) {
     if (!state.ctx || !state.ctx.can_read_audit) return;
+    if (n === undefined) n = state.seq;
     var res = await sb.from('security_audit').select('occurred_at,event,origen,detail').order('occurred_at', { ascending: false }).limit(60);
+    if (!vigente(n)) return;
     if (res.error) { $('logRows').innerHTML = '<tr><td colspan="4" class="empty">' + esc(readable(res.error)) + '</td></tr>'; return; }
     $('logRows').innerHTML = (res.data || []).map(function (r) {
       return '<tr><td class="mono">' + esc(new Date(r.occurred_at).toLocaleString('es-MX')) + '</td><td>' + esc(r.event) +
@@ -335,29 +360,33 @@
   }
 
   async function refresh() {
-    if (state.loading) return;
+    var n = ++state.seq;
     state.loading = true;
     setStatus('Consultando el servidor…', 'loading');
     try {
       var args = filterArgs();
       args.p_limit = PAGE; args.p_offset = state.offset; args.p_sort = state.sort; args.p_search = state.search || null;
-      state.data = await rpc('kriter_dashboard', args);
+      var datos = await rpc('kriter_dashboard', args);
+      if (!vigente(n)) return;
+      state.data = datos;
       var k = state.data.kpi;
       var areas = (state.ctx.regions || []).length;
       setStatus(integer(k.records) + ' registros autorizados · ' + integer(k.products) + ' productos · ' +
         integer(k.weeks) + ' semanas · ' + integer(areas) + ' area(s) en tu alcance');
       renderOverview(); renderPortfolio(); renderTerritories(); renderMethod();
-      await renderScenario();
-      await renderSecurityLog();
+      await renderScenario(n);
+      await renderSecurityLog(n);
+      if (!vigente(n)) return;
       $('appError').hidden = true;
     } catch (err) {
+      if (!vigente(n)) return;
       state.lastError = err;
       setStatus(readable(err), 'error');
       $('appError').hidden = false;
       $('appErrorText').textContent = readable(err);
       if (err.code === '42501') { state.filters.region = ''; syncControls(); }
     } finally {
-      state.loading = false;
+      if (vigente(n)) state.loading = false;
     }
   }
 
@@ -372,6 +401,9 @@
   }
 
   async function reload() {
+    state.seq++;
+    limpiarVista();
+    setStatus('Comprobando tus permisos…', 'loading');
     try {
       await loadContext();
       await refresh();
@@ -493,7 +525,7 @@
     $('prevPage').addEventListener('click', function () { state.offset = Math.max(0, state.offset - PAGE); refresh(); });
     $('nextPage').addEventListener('click', function () { state.offset += PAGE; refresh(); });
     ['scenarioWindow', 'scenarioHorizon', 'scenarioPct'].forEach(function (id) {
-      $(id).addEventListener('input', function () { renderScenario(); });
+      $(id).addEventListener('input', function () { renderScenario(state.seq); });
     });
     $('exportBtn').addEventListener('click', exportCSV);
     $('loginBtn').addEventListener('click', function () { openLogin(true); });
