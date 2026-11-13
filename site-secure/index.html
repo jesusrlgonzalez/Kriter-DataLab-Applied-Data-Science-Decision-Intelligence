@@ -636,18 +636,32 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
     syncControls();
   }
 
-  async function reload() {
-    state.seq++;
-    limpiarVista();
-    setStatus('Comprobando tus permisos…', 'loading');
-    try {
-      await loadContext();
-      await refresh();
-    } catch (err) {
-      setStatus(readable(err), 'error');
-      $('appError').hidden = false;
-      $('appErrorText').textContent = readable(err);
-    }
+  /* Iniciar o cerrar sesion dispara a la vez la llamada explicita y el evento
+     de Supabase. Sin control, cuatro recargas simultaneas se pisan y el tablero
+     puede quedarse vacio. Aqui solo corre una; si llegan mas peticiones
+     mientras tanto, se vuelve a ejecutar una sola vez al terminar. */
+  var enCurso = null, pendiente = false;
+
+  function reload() {
+    if (enCurso) { pendiente = true; return enCurso; }
+    enCurso = (async function () {
+      do {
+        pendiente = false;
+        state.seq++;
+        limpiarVista();
+        setStatus('Comprobando tus permisos…', 'loading');
+        try {
+          await loadContext();
+          await refresh();
+        } catch (err) {
+          setStatus(readable(err), 'error');
+          $('appError').hidden = false;
+          $('appErrorText').textContent = readable(err);
+        }
+      } while (pendiente);
+    })();
+    enCurso.catch(function () {}).then(function () { enCurso = null; });
+    return enCurso;
   }
 
   /* ------------------------------------------------------------ exportar */
