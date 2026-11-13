@@ -31,3 +31,5 @@
   .session-id strong,.session-id small{white-space:normal;overflow-wrap:anywhere}
   #exportBtn{flex:1 1 100%;justify-content:center}
 }
+/* Cabecera de fila de la tabla de alcance: visualmente igual que una celda. */
+.audit-table th[scope=row]{text-align:left;font-weight:600;color:#0f3442}

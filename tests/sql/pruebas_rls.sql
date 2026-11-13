@@ -66,7 +66,7 @@ begin
   exception when others then o := o || jsonb_build_object('autoasignar_area', 'DENEGADO:' || sqlstate); end;
 
   perform app.become(p_email);
-  begin select count(*) into n from public.kriter_export_products();
+  begin select jsonb_array_length(public.kriter_export_products()) into n;
     o := o || jsonb_build_object('export', n::text);
   exception when others then o := o || jsonb_build_object('export', 'DENEGADO:' || sqlstate); end;
 

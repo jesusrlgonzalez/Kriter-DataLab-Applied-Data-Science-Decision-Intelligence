@@ -91,6 +91,9 @@ Lee **[la guía de publicación sin terminal](docs/RUTA_SIN_TERMINAL.md)** o **[
 - [Plan de reversión](docs/REVERSION.md)
 - [Carga reproducible del dataset](tools/CARGA_DATASET.md)
 - [Dictamen técnico de la migración](docs/DICTAMEN_MIGRACION_RLS.md)
+- [Continuidad operativa](docs/CONTINUIDAD.md)
+- [Política de datos sintéticos](docs/POLITICA_DATOS_SINTETICOS.md)
+- [Accesibilidad, rendimiento y compatibilidad](docs/ACCESIBILIDAD_Y_COMPATIBILIDAD.md)
 
 ## Estado
 

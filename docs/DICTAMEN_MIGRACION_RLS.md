@@ -38,7 +38,7 @@ Ninguna puerta quedó en FAIL.
 
 | # | Pendiente | Acción | Quién |
 |---|---|---|---|
-| 1 | Las pruebas adversariales no corren en la validación automática | Guardar el secreto `KRITER_QA_USERS` (el JSON está en el archivo de credenciales de QA) y las variables `SUPABASE_URL` y `SUPABASE_PUBLISHABLE_KEY` | Titular |
+| 1 | Las pruebas adversariales no corren en la validación automática. **Desde 2.2.0 son un control bloqueante**: el flujo de publicación falla si no están configuradas, de modo que no puede publicarse una versión con control de acceso sin haber verificado el aislamiento | Guardar el secreto `KRITER_QA_USERS` (el JSON está en el archivo de credenciales de QA) y las variables `SUPABASE_URL` y `SUPABASE_PUBLISHABLE_KEY` | Titular |
 | 2 | La rama `main` no está protegida | GitHub → *Settings → Branches → Add rule*: exigir que la validación pase antes de fusionar | Titular |
 | 3 | GitHub OAuth no está habilitado | Procedimiento en `docs/ADMINISTRACION.md` §Habilitar GitHub | Titular |
 | 4 | Protección de contraseñas filtradas desactivada | Supabase → *Authentication*: activar la comprobación contra HaveIBeenPwned (gratuita) | Titular |
@@ -69,6 +69,10 @@ ausencia queda documentada en cada ejecución en lugar de pasar inadvertida.
 | 11 | Un tiempo de ejecución agotado mostraba el mensaje crudo de PostgreSQL (`canceling statement due to statement timeout`). Observado al saturar el proyecto con ráfagas de prueba. | Baja | Mensaje en español con sugerencia de reintento o de acotar el periodo |
 | 12 | Quedó en la base una función auxiliar de medición de tiempos creada durante el diagnóstico. | Baja | Migración 13: eliminada; el analizador de Supabase ya no la reporta |
 
+| 13 | Cuatro tokens de color no alcanzaban el minimo de contraste WCAG AA: el texto secundario y las etiquetas de eje daban 3.03:1 y el pie de pagina 2.86:1, frente al 4.5:1 exigido. Detectado midiendo la relacion de contraste de cada combinacion del artefacto. | Media | Tokens sustituidos; las cuatro combinaciones superan ahora 5.4:1 |
+| 14 | Los 80 puntos de la grafica de linea eran enfocables con teclado, de modo que cruzar el tablero exigia 80 tabulaciones. Detectado al recorrer el DOM del artefacto. | Media | Foco retirado de los puntos; la serie se describe en texto y la tabla equivalente sigue siendo enfocable |
+| 15 | La tabla de la bitacora no tenia encabezados de fila, por lo que un lector de pantalla leia celdas sin referencia. Detectado en la revision de semantica. | Baja | Primera celda de cada fila como `th scope="row"` |
+
 ## 5. Resultados de aislamiento medidos
 
 Banco SQL (`tests/sql/pruebas_rls.sql`), ejecutado con `SET ROLE` sobre el
@@ -95,11 +99,15 @@ migración no alteró ninguna cifra.
 
 ## 6. Riesgos aceptados, con justificación
 
-- **`kriter_log_event` es SECURITY DEFINER y la puede llamar cualquiera.** Es
-  deliberado: la alternativa sería dar permiso de escritura directa sobre
-  `security_audit`, lo que permitiría insertar cualquier fila. La función acepta
-  una lista cerrada de seis eventos, trunca el detalle y limita a 50 apuntes por
-  usuario y hora. El analizador de Supabase lo marca como aviso; se asume.
+- **`kriter_log_event` es SECURITY DEFINER.** Es deliberado: la alternativa
+  sería dar permiso de escritura directa sobre `security_audit`, lo que
+  permitiría insertar cualquier fila, falsear fechas y suplantar a otro usuario.
+  Desde la migración 14 la superficie es menor: ya no puede llamarla el rol
+  anónimo, exige identidad verificada, el servidor fija el usuario y la fecha,
+  acepta una lista cerrada de seis eventos, trunca el detalle y limita a 50
+  apuntes por usuario y hora. El riesgo queda **aceptado formalmente**, con la
+  alternativa descartada y los nueve controles compensatorios, en
+  `docs/MODELO_SEGURIDAD_RLS.md` §5.1.
 - **Un Space estático no permite cabeceras HTTP propias** (CSP, `no-store`). La
   versión FastAPI sí las tenía. Se pierde a cambio de eliminar el servidor.
 - **Las cuentas de QA son reales** y deben eliminarse antes de usar el proyecto
@@ -109,14 +117,19 @@ migración no alteró ninguna cifra.
 
 ## 7. Límites de lo verificado
 
-- Pruebas en un navegador de motor Chromium, con móvil emulado a 375 px. No se
-  probó en Firefox, Safari ni en un teléfono físico.
+- Pruebas en un navegador de motor Chromium, con móvil emulado a 375 px. **No
+  se probó en Firefox, Safari ni en un teléfono físico**, y no se afirma
+  compatibilidad con ellos. `docs/ACCESIBILIDAD_Y_COMPATIBILIDAD.md` incluye una
+  lista de comprobación manual de 10 minutos para cerrarlo.
 - Rendimiento medido en el servidor: el tablero del administrador tarda 200 ms
   y la exportación completa 135 ms. El plan gratuito aplica un límite de 8
   segundos por consulta; bajo ráfagas de prueba intensas se alcanzó ese límite y
   la aplicación lo informa con un mensaje claro y opción de reintento.
-- Accesibilidad revisada a nivel básico (etiquetas, foco, teclado, idioma); no
-  es una auditoría WCAG completa.
+- Accesibilidad: contraste medido token por token y corregido hasta cumplir
+  WCAG AA en texto normal; semántica, foco, teclado, tamaño de objetivo táctil e
+  idioma revisados. **No es una auditoría WCAG completa** ni se probó con
+  lectores de pantalla reales. Detalle en
+  `docs/ACCESIBILIDAD_Y_COMPATIBILIDAD.md`.
 - **Esto no es el RLS nativo de Microsoft Power BI**: es Row Level Security de
   PostgreSQL a través de Supabase.
 

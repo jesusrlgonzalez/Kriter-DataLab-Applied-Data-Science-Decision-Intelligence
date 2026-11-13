@@ -24,6 +24,29 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v5
+      # Control de seguridad obligatorio: sin pruebas adversariales en verde no
+      # se publica. Si faltan las credenciales de QA, el despliegue se detiene.
+      - name: Pruebas adversariales de autorización (obligatorias)
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
+          KRITER_QA_USERS: ${{ secrets.KRITER_QA_USERS }}
+          KRITER_EVIDENCIA: evidencia_adversarial.json
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$KRITER_QA_USERS" ]; then
+            echo '::error::Faltan SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY o el secreto KRITER_QA_USERS. No se publica una versión con control de acceso sin ejecutar las pruebas de aislamiento.'
+            exit 1
+          fi
+          node tests/adversarial_http.mjs
+      - name: Conservar la evidencia de las pruebas
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidencia-adversarial-${{ github.run_id }}
+          path: evidencia_adversarial.json
+          if-no-files-found: warn
+          retention-days: 90
+
       - name: Verificar credenciales y destino
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}

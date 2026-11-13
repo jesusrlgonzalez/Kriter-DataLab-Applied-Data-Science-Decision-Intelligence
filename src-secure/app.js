@@ -191,7 +191,7 @@
     var ticks = indices.map(function (i) { return '<text class="axislabel" x="' + x(i) + '" y="' + (H - 11) + '" text-anchor="middle">' + esc(timeline[i].week) + '</text>'; }).join('');
     var points = timeline.map(function (r, i) {
       return '<circle class="plotpoint" cx="' + x(i) + '" cy="' + y(Number(r.value)) + '" r="' + (timeline.length > 40 ? 2.7 : 4.7) +
-        '" tabindex="0" aria-label="' + esc(r.week) + ': ' + money(r.value) + '"><title>Semana ' + esc(r.week) + ' · ' + esc(r.date) + ' · ' + money(r.value) + ' en valor</title></circle>';
+        '" aria-label="' + esc(r.week) + ': ' + money(r.value) + '"><title>Semana ' + esc(r.week) + ' · ' + esc(r.date) + ' · ' + money(r.value) + ' en valor</title></circle>';
     }).join('');
     svg.innerHTML = grid + '<path class="plotfill" d="' + fill + '"/><path class="plotline" d="' + line + '"/>' + points + ticks;
   }
@@ -328,7 +328,9 @@
       ['Calculo de agregados', 'En el servidor: el navegador no recibe registros fuera de alcance'],
       ['Unidad monetaria', 'Unidades de valor simuladas, no moneda real']
     ];
-    $('auditRows').innerHTML = rows.map(function (r) { return '<tr><td>' + esc(r[0]) + '</td><td>' + r[1] + '</td></tr>'; }).join('');
+    $('auditRows').innerHTML = rows.map(function (r) {
+      return '<tr><th scope="row">' + esc(r[0]) + '</th><td>' + r[1] + '</td></tr>';
+    }).join('');
   }
 
   async function renderSecurityLog(n) {

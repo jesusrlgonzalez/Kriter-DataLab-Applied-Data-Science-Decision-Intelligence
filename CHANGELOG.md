@@ -1,5 +1,35 @@
 # Cambios
 
+## 2.2.0 — 2026-11-13
+
+Cierre de estandares profesionales: seguridad, validacion independiente,
+gobierno del codigo, gestion de identidades, continuidad, calidad y
+documentacion.
+
+- Reduce la superficie del canal de bitacora: `kriter_log_event` deja de estar
+  disponible para el rol anonimo, exige identidad verificada, fija la fecha en
+  el servidor, acota los eventos a una lista cerrada, trunca el detalle y limita
+  a 50 apuntes por usuario y hora (migracion 14).
+- Registra formalmente el riesgo aceptado de ese canal, con la alternativa
+  descartada y nueve controles compensatorios.
+- Las pruebas adversariales de autorizacion pasan a ser un control bloqueante
+  del flujo de publicacion: sin credenciales de prueba configuradas no se
+  publica, y la evidencia se conserva 90 dias como artefacto de la ejecucion.
+- Corrige el contraste de cuatro tokens de color que no alcanzaban el minimo
+  WCAG AA (3.03:1 y 2.86:1 entre ellos) y los lleva por encima de 5.4:1.
+- Retira el foco de teclado de los 80 puntos de la grafica, que obligaban a 80
+  tabulaciones para cruzar el tablero.
+- Anade encabezados de fila a la tabla de la bitacora, que un lector de pantalla
+  leia sin referencia.
+- Guiones de respaldo y de retiro de identidades de prueba en
+  `supabase/respaldo/`.
+- Documentacion nueva: continuidad operativa con restauracion comprobada,
+  politica de datos sinteticos, accesibilidad y compatibilidad, ciclo de vida de
+  identidades y distincion explicita entre el RLS de PostgreSQL y el RLS de
+  Power BI.
+- Los nombres de los archivos de migracion 12 y 13 ahora coinciden exactamente
+  con las versiones aplicadas en la base.
+
 ## 2.1.0 — 2026-11-13
 
 - Corrige la exportacion CSV, que la API truncaba en silencio a 1,000 filas: la funcion devuelve ahora un unico valor JSON y la suma vuelve a cuadrar con el indicador del tablero.

@@ -66,3 +66,64 @@ realizarse desde el servidor; el resto del diseño se mantiene.
 - **Sin auditoría externa.** El código no ha sido revisado por un tercero.
 - **El canal de carga del dataset** existió entre dos migraciones y quedó
   eliminado; está documentado en `tools/CARGA_DATASET.md`.
+
+## 5. Riesgos aceptados formalmente
+
+Un riesgo aceptado se declara, no se oculta. Cada uno lleva el motivo, la
+alternativa descartada y el control compensatorio.
+
+### 5.1 `public.kriter_log_event` con privilegios elevados
+
+| Campo | Contenido |
+|---|---|
+| Aviso del analizador | *Security Definer function accessible to the `authenticated` role* |
+| Decisión | **Riesgo aceptado**, con superficie reducida (migración 14) |
+| Motivo | La aplicación necesita reportar las denegaciones que recibe. La bitácora `security_audit` es de solo lectura para todos los roles del cliente, así que el apunte requiere privilegios del propietario |
+| Alternativa descartada | Conceder `INSERT` sobre `public.security_audit` a `authenticated`: permitiría escribir filas arbitrarias, falsear fechas, suplantar a otro usuario y saturar la tabla. Sería **más** permisivo, no menos |
+| Controles compensatorios | 1) `execute` revocado a `anon`; 2) exige `auth.uid() is not null`; 3) `user_id` lo fija el servidor, no el cliente; 4) `occurred_at` lo fija el servidor; 5) lista cerrada de seis eventos; 6) detalle truncado a 500 caracteres; 7) límite de 50 apuntes por usuario y hora; 8) `set search_path = ''`; 9) columna `origen` que marca estos apuntes como *reporte del cliente*, no como prueba del servidor |
+| Impacto máximo si se abusa | Una identidad válida puede insertar hasta 50 apuntes por hora con su propio identificador y uno de seis valores de evento. No puede leer, modificar ni borrar nada, ni escribir en nombre de otro |
+| Evidencia no repudiable | El `raise log` de `app.log_security_event` en el log de PostgreSQL, que el cliente no puede escribir ni alterar |
+| Revisión | Al retirar las identidades de prueba o al pasar a datos reales |
+
+### 5.2 Protección contra contraseñas filtradas
+
+| Campo | Contenido |
+|---|---|
+| Aviso | *Leaked password protection disabled* |
+| Decisión | **Pendiente de acción del titular del proyecto** (no es modificable por migración SQL: es un ajuste del panel de Auth) |
+| Procedimiento | Panel de Supabase → *Authentication → Policies* → activar *Prevent use of leaked passwords* |
+| Mientras no esté activa | Las identidades de prueba usan contraseñas generadas de 32 caracteres, que no figuran en listas de filtraciones conocidas |
+
+### 5.3 Space estático sin cabeceras HTTP
+
+Ya declarado en el apartado 4. Pérdida deliberada: se cambia la posibilidad de
+fijar CSP por la eliminación del servidor y de su coste. El control que importa
+—la autorización— no depende de cabeceras: vive en las políticas de PostgreSQL.
+
+## 6. RLS de PostgreSQL y RLS de Power BI: no son lo mismo
+
+Esta distinción se escribe porque confundirlas sería una afirmación falsa de
+cumplimiento.
+
+| Aspecto | Este proyecto (PostgreSQL + Supabase) | Power BI Service |
+|---|---|---|
+| Dónde se aplica | En el motor de base de datos, en cada `select`, con `auth.uid()` | En el modelo semántico, al evaluar la consulta DAX |
+| Mecanismo | Políticas `row level security` sobre tablas | Roles con filtros DAX sobre tablas del modelo |
+| Identidad | JWT de Supabase Auth | Identidad de Microsoft Entra ID |
+| Asignación | Tablas `user_roles` y `user_regions` | Pertenencia a roles del conjunto de datos en el servicio |
+| Verificación | 21 pruebas adversariales HTTP contra el extremo real | *Test as role* en el servicio |
+| Licenciamiento | Ninguno | Pro o PPU según el escenario |
+| Qué se omite | No hay dinamismo por USERPRINCIPALNAME, ni seguridad a nivel de objeto, ni filtros bidireccionales | — |
+
+**Lo que sí es equivalente:** la propiedad de fondo. En ambos casos el usuario
+no puede obtener filas fuera de su alcance aunque manipule la petición, porque
+el filtro lo aplica el motor y no la interfaz.
+
+**Lo que no debe decirse:** que este proyecto *implementa RLS de Power BI*, que
+*sustituye* a Power BI Service o que las pruebas aquí realizadas certifican un
+modelo semántico de Power BI. No lo hacen y no se afirma.
+
+**Por qué importa en este portafolio:** el proyecto demuestra el concepto de
+seguridad a nivel de fila aplicada en el servidor, que es el mismo concepto que
+se configura en Power BI, pero con una implementación distinta y verificable de
+forma pública y sin coste de licencia.

@@ -99,7 +99,7 @@ Derechos Reservados (c) 2026
     const fill=line+` L ${coords.at(-1)[0].toFixed(2)} ${top+h} L ${coords[0][0].toFixed(2)} ${top+h} Z`;
     const positions=W<520?[0,.5,1]:[0,.25,.5,.75,1];const indices=positions.map(v=>Math.floor((timeline.length-1)*v)).filter((x,i,arr)=>arr.indexOf(x)===i);
     const ticks=indices.map(i=>`<text class="axislabel" x="${x(i)}" y="${H-11}" text-anchor="middle">${esc(timeline[i].label)}</text>`).join('');
-    const points=timeline.map((r,i)=>`<circle class="plotpoint" cx="${x(i)}" cy="${y(r.value)}" r="${timeline.length>40?2.7:4.7}" tabindex="0" aria-label="${esc(r.label)}: ${money(r.value)}"><title>Semana ${esc(r.label)} · ${esc(r.date)} · ${money(r.value)} en valor</title></circle>`).join('');
+    const points=timeline.map((r,i)=>`<circle class="plotpoint" cx="${x(i)}" cy="${y(r.value)}" r="${timeline.length>40?2.7:4.7}" aria-label="${esc(r.label)}: ${money(r.value)}"><title>Semana ${esc(r.label)} · ${esc(r.date)} · ${money(r.value)} en valor</title></circle>`).join('');
     svg.innerHTML=grid+`<path class="plotfill" d="${fill}"/><path class="plotline" d="${line}"/>`+points+ticks;
   }
   function renderOverview(){const r=results;

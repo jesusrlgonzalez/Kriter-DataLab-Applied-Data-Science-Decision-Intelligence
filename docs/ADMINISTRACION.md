@@ -110,3 +110,61 @@ Las denegaciones que revierten la transacción no aparecen aquí: están en
    a *Redirect URLs*.
 4. Compilar con `SUPABASE_GITHUB_OAUTH=1` o poner `"github_oauth": true` en
    `supabase/public_config.json` para mostrar el botón.
+
+## Ciclo de vida de una identidad
+
+El orden importa: primero la identidad, después el alcance; para dar de baja, al
+revés.
+
+### Alta
+
+| # | Paso | Responsable | Comprobación |
+|---|---|---|---|
+| 1 | Autorización escrita del alcance solicitado (rol y áreas) | Quien aprueba | Queda registrada fuera del sistema |
+| 2 | Crear la identidad (*Add user*, o acceso con GitHub) | Administrador | Aparece en `public.profiles` por el disparador |
+| 3 | Asignar rol y áreas (consultas de arriba) | Administrador | `select * from public.kriter_session_context()` con esa sesión devuelve el alcance esperado |
+| 4 | Entregar el acceso por un canal distinto del correo de la cuenta | Administrador | — |
+| 5 | Respaldar las asignaciones | Administrador | `supabase/respaldo/exportar_asignaciones.sql` |
+
+Si la persona accede con GitHub, los pasos 2 y 4 desaparecen: la identidad se
+crea en su primer acceso y solo hay que asignarle el alcance, que hasta entonces
+es el público.
+
+### Cambio de alcance
+
+Sustituir las filas de `user_regions` o `user_roles`. Surte efecto en la
+consulta siguiente. **Verificado:** al retirar un área a una identidad real, la
+siguiente consulta dejó de incluirla y el filtro explícito por esa área devolvió
+`42501`; al restaurarla con el guion de respaldo, el alcance volvió exacto
+(evidencia en `docs/CONTINUIDAD.md`, apartado 4).
+
+### Baja y revocación
+
+| # | Paso | Efecto |
+|---|---|---|
+| 1 | Borrar sus filas de `user_regions` y `user_roles` | La siguiente consulta la deja con el alcance público |
+| 2 | **Authentication → Users → Delete user** | Invalida el token de refresco: la sesión abierta caduca y la aplicación la devuelve al alcance público |
+| 3 | Anotar la baja y la fecha | Trazabilidad |
+| 4 | Revisar la bitácora de esa identidad antes de borrarla, si hace falta conservarla | `security_audit` guarda el `user_id`; al borrar la identidad el apunte queda sin correo asociado |
+
+**Importante:** borrar solo las asignaciones no cierra la sesión abierta; la deja
+con el alcance público, que es el comportamiento correcto para una pérdida de
+permisos, no para una baja. Para una baja hay que borrar la identidad.
+
+### Retiro de las identidades de prueba
+
+Antes de usar el proyecto con cualquier dato que no sea sintético, ejecutar
+`supabase/respaldo/retirar_cuentas_prueba.sql`, que quita sus asignaciones y
+deja la lista de identidades a borrar en el panel. Después, retirar el secreto
+`KRITER_QA_USERS` de GitHub o reemplazarlo por identidades nuevas: el flujo de
+publicación **no publica** si las pruebas de aislamiento no pueden ejecutarse.
+
+### Procedimientos reservados al titular del proyecto
+
+| Procedimiento | Dónde | Por qué no se automatiza |
+|---|---|---|
+| Activar la protección contra contraseñas filtradas | *Authentication → Policies* | Ajuste del panel, no modificable por SQL |
+| Activar GitHub como proveedor | *Authentication → Providers* | Requiere el secreto de la OAuth App |
+| Rotar la clave de servicio | *Settings → API* | Credencial privilegiada |
+| Proteger la rama `main` | GitHub → *Settings → Branches* | Requiere permisos de administración del repositorio |
+| Publicar una etiqueta de versión | GitHub → *Releases* | Requiere permisos de escritura sobre referencias |
