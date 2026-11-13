@@ -410,12 +410,21 @@
      de Supabase. Sin control, cuatro recargas simultaneas se pisan y el tablero
      puede quedarse vacio. Aqui solo corre una; si llegan mas peticiones
      mientras tanto, se vuelve a ejecutar una sola vez al terminar. */
-  var enCurso = null, pendiente = false;
+  var enCurso = null, pendiente = false, motivoEnCurso = null;
 
-  function reload() {
-    if (enCurso) { pendiente = true; return enCurso; }
+  /* El motivo evita recargar dos veces por el mismo cambio: al iniciar sesion
+     llegan la llamada explicita y el evento de Supabase, ambos con motivo
+     'sesion'. Un motivo distinto (cerrar sesion, reintento) si encola otra. */
+  function reload(motivo) {
+    motivo = motivo || 'manual';
+    if (enCurso) {
+      if (motivo !== motivoEnCurso) { pendiente = motivo; }
+      return enCurso;
+    }
+    motivoEnCurso = motivo;
     enCurso = (async function () {
       do {
+        if (pendiente) { motivoEnCurso = pendiente; }
         pendiente = false;
         state.seq++;
         limpiarVista();
@@ -430,7 +439,7 @@
         }
       } while (pendiente);
     })();
-    enCurso.catch(function () {}).then(function () { enCurso = null; });
+    enCurso.catch(function () {}).then(function () { enCurso = null; motivoEnCurso = null; });
     return enCurso;
   }
 
@@ -485,7 +494,7 @@
     $('loginPass').value = '';
     openLogin(false);
     report('sesion_iniciada', {});
-    await reload();
+    await reload('sesion');
   }
 
   async function doLogout() {
@@ -493,7 +502,7 @@
     await sb.auth.signOut().catch(function () {});
     state.filters = { region: '', year: '', segment: '', brand: '', from: '', to: '' };
     state.offset = 0;
-    await reload();
+    await reload('cierre');
   }
 
   async function doGithub() {
@@ -553,14 +562,15 @@
     $('loginForm').addEventListener('submit', doLogin);
     $('logoutBtn').addEventListener('click', doLogout);
     $('githubBtn').addEventListener('click', doGithub);
-    $('retryBtn').addEventListener('click', reload);
+    $('retryBtn').addEventListener('click', function () { reload('reintento'); });
     var frame = 0;
     window.addEventListener('resize', function () {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(function () { if (state.data && $('page-resumen').classList.contains('active')) drawLine('chartWeekly', state.data.timeline || []); });
     });
     sb.auth.onAuthStateChange(function (event) {
-      if (event === 'SIGNED_OUT' || event === 'SIGNED_IN' || event === 'USER_UPDATED') reload();
+      if (event === 'SIGNED_OUT') reload('cierre');
+      else if (event === 'SIGNED_IN' || event === 'USER_UPDATED') reload('sesion');
     });
   }
 
@@ -570,5 +580,5 @@
   }
   $('githubBtn').hidden = !CFG.github_oauth;
   wire();
-  reload();
+  reload('inicio');
 })();
