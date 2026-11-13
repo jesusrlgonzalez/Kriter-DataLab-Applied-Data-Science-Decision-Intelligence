@@ -1,0 +1,111 @@
+{
+  "descripcion": "Casos adversariales ejecutados con tests/adversarial_http.mjs contra el proyecto Supabase real, con cinco identidades independientes, desde un navegador de escritorio.",
+  "fecha": "2026-11-13",
+  "proyecto": "https://nnutikucpezhnnkawczp.supabase.co",
+  "commit_script": "af9d8049c0b9fe1bf674d31c2bcbf294502d368d",
+  "total": 20,
+  "pass": 20,
+  "fail": 0,
+  "casos": [
+    {
+      "id": "RLS-01",
+      "descripcion": "Visitante sin sesion solo ve el area publica",
+      "estado": "PASS"
+    },
+    {
+      "id": "RLS-02",
+      "descripcion": "Visitante que pide un area protegida es denegado",
+      "estado": "PASS"
+    },
+    {
+      "id": "RLS-03",
+      "descripcion": "Administrador consulta todas las areas autorizadas",
+      "estado": "PASS"
+    },
+    {
+      "id": "RLS-04",
+      "descripcion": "Gerente regional ve exclusivamente sus areas asignadas",
+      "estado": "PASS"
+    },
+    {
+      "id": "RLS-05",
+      "descripcion": "Analista no puede consultar un area ajena",
+      "estado": "PASS"
+    },
+    {
+      "id": "RLS-06",
+      "descripcion": "Manipular el identificador de area no devuelve filas ajenas",
+      "estado": "PASS"
+    },
+    {
+      "id": "RLS-07",
+      "descripcion": "Lectura masiva directa solo entrega areas autorizadas",
+      "estado": "PASS"
+    },
+    {
+      "id": "RLS-08",
+      "descripcion": "Usuario sin autorizacion no accede a datos protegidos",
+      "estado": "PASS"
+    },
+    {
+      "id": "RLS-09",
+      "descripcion": "Un usuario no puede asignarse un rol administrativo",
+      "estado": "PASS"
+    },
+    {
+      "id": "RLS-10",
+      "descripcion": "Un usuario no puede autoasignarse un area",
+      "estado": "PASS"
+    },
+    {
+      "id": "RLS-11",
+      "descripcion": "La exportacion CSV respeta el alcance del perfil",
+      "estado": "PASS"
+    },
+    {
+      "id": "RLS-12",
+      "descripcion": "La exportacion de un area ajena se deniega",
+      "estado": "PASS"
+    },
+    {
+      "id": "RLS-13",
+      "descripcion": "El perfil auditor no puede ejecutar escenarios",
+      "estado": "PASS"
+    },
+    {
+      "id": "RLS-14",
+      "descripcion": "La bitacora solo es legible por perfiles de auditoria",
+      "estado": "PASS"
+    },
+    {
+      "id": "RLS-15",
+      "descripcion": "Una sesion invalida o caducada no puede consultar",
+      "estado": "PASS"
+    },
+    {
+      "id": "RLS-16",
+      "descripcion": "Los perfiles ajenos no son legibles",
+      "estado": "PASS"
+    },
+    {
+      "id": "RLS-17",
+      "descripcion": "No existe ninguna ruta de escritura sobre los datos comerciales",
+      "estado": "PASS"
+    },
+    {
+      "id": "RLS-18",
+      "descripcion": "El canal temporal de carga ya no existe",
+      "estado": "PASS"
+    },
+    {
+      "id": "RLS-19",
+      "descripcion": "Las agregaciones coinciden con la exportacion del mismo perfil",
+      "estado": "PASS"
+    },
+    {
+      "id": "RLS-20",
+      "descripcion": "Un periodo invertido se rechaza con un error explicito",
+      "estado": "PASS"
+    }
+  ]
+}
