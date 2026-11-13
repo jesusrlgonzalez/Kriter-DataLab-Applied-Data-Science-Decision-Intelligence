@@ -1,6 +1,6 @@
 # Kriter DataLab - hashes SHA256 (archivos del repositorio)
 1ce2e14e9b3ddcad7927244237964ce76edb44a7da8bf9d2ec752d1d4840e5a7  .gitattributes
-cc7d653afb59a8ffdaec19f7399ad461bcaac693a38531f3ee899abc23dec9a9  .github/workflows/ci.yml
+9483251c493cbf7680b6f670700458b952659539384fb92269c294820d0aafd6  .github/workflows/ci.yml
 89779f3410848a439dafccd4605bb2538b51137ce98bd27bafaf642977016f1a  .github/workflows/deploy-candidate-hf.yml
 edb4ade84fd720ccb638c25bc3d67a353d76eeadbb39ab9bee60e06316f6265a  .github/workflows/deploy-huggingface.yml
 3debf65a68c86d54c5fa3700165a7dcca2c8ed5dda8c2c491324f281f68ddf71  .gitignore

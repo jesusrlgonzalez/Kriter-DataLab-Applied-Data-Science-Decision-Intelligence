@@ -44,10 +44,16 @@ jobs:
         run: python tools/verify_release.py
 
       # --- Pruebas adversariales reales (solo si existen credenciales de QA) ---
+      # El contexto secrets no puede usarse en una condicion if: se comprueba
+      # dentro del paso y, si falta, el control queda registrado como BLOCKED.
       - name: Pruebas adversariales de autorización
-        if: ${{ vars.SUPABASE_URL != '' && secrets.KRITER_QA_USERS != '' }}
         env:
           SUPABASE_URL: ${{ vars.SUPABASE_URL }}
           SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
           KRITER_QA_USERS: ${{ secrets.KRITER_QA_USERS }}
-        run: node tests/adversarial_http.mjs
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$KRITER_QA_USERS" ]; then
+            echo 'BLOCKED: faltan las variables de QA; no se ejecutaron las pruebas adversariales.' | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          node tests/adversarial_http.mjs
