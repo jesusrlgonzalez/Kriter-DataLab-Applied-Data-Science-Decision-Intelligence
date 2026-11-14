@@ -43,7 +43,7 @@ autorización se evalúa en PostgreSQL, no en el navegador.
 ```bash
 python tools/build_secure.py      # compila site-secure/index.html
 python tools/security_scan.py     # comprueba que no se publican credenciales ni datos
-node tests/adversarial_http.mjs   # 20 casos adversariales con identidades reales
+node tests/adversarial_http.mjs   # 21 casos adversariales con identidades reales
 ```
 
 Detalle en **[arquitectura](docs/ARQUITECTURA_SUPABASE.md)**,
